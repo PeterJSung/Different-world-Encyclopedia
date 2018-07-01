@@ -12,7 +12,26 @@ UnityGenerated/
  
 Library/
  
- 
+Assets/1. Scenes
+!.gitkeep
+
+Assets/2. Scripts
+!.gitkeep
+
+Assets/3. Prefabs
+!.gitkeep
+
+Assets/4. Images
+!.gitkeep
+
+Assets/5. Models
+!.gitkeep
+
+Assets/6. Sounds
+!.gitkeep
+
+Assets/Resource
+!.gitkeep
  
 # ===================================== #
  
