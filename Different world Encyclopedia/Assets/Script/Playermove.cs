@@ -8,9 +8,11 @@ public class Playermove : MonoBehaviour
     float jumpForce = 400.0f;
     float walkForce = 30.0f;
     float maxWalkSpeed = 3.1f;
+    float dashForce = 600.0f;
+    float time = 0f;
     public int jumpcount = 2;
     public bool isGrounded = false;
-   
+
     void Start()
     {
         this.rigid2D = GetComponent<Rigidbody2D>();
@@ -23,7 +25,7 @@ public class Playermove : MonoBehaviour
 
         if (col.gameObject.tag == "Ground")
             isGrounded = true;
-            jumpcount = 2;
+        jumpcount = 2;
     }
 
 
@@ -38,28 +40,54 @@ public class Playermove : MonoBehaviour
                 jumpcount--;
             }
 
+        //오른쪽으로 대쉬
+        if (Input.GetKeyDown(KeyCode.C) && (Input.GetKey(KeyCode.RightArrow)))
+        {
+            time = Time.time;
+        }
+        if ((Time.time < time + 1f) && (Input.GetKeyDown(KeyCode.C)))
+        {
+            this.rigid2D.AddForce(transform.right * this.dashForce);
+            {
+
+                }
+            }
+
+        //왼쪽으로 대쉬
+        if (Input.GetKeyDown(KeyCode.C) && (Input.GetKey(KeyCode.LeftArrow)))
+        {
+            time = Time.time;
+        }
+        if ((Time.time < time + 1f) && (Input.GetKeyDown(KeyCode.C)))
+        {
+            this.rigid2D.AddForce(transform.right * -1 * this.dashForce);
+            {
+
+            }
+        }
+
+
         // 좌우이동
         int key = 0;
-        if (Input.GetKey(KeyCode.RightArrow)) key = 1;
-        if (Input.GetKey(KeyCode.LeftArrow)) key = -1;
+            if (Input.GetKey(KeyCode.RightArrow)) key = 1;
+            if (Input.GetKey(KeyCode.LeftArrow)) key = -1;
 
-        // 플레이어 속도
-        float speedx = Mathf.Abs(this.rigid2D.velocity.x);
+            // 플레이어 속도
+            float speedx = Mathf.Abs(this.rigid2D.velocity.x);
 
-        // 속도 제한
-        if (speedx < this.maxWalkSpeed)
-        {
-            this.rigid2D.AddForce(transform.right * key * this.walkForce);
+            // 속도 제한
+            if (speedx < this.maxWalkSpeed)
+            {
+                this.rigid2D.AddForce(transform.right * key * this.walkForce);
+            }
+
+            // 캐릭터 스프라이트 반전
+            if (key != 0)
+            {
+                transform.localScale = new Vector3(key, 1, 1);
+            }
+
         }
 
-        // 캐릭터 스프라이트 반전
-        if (key != 0)
-        {
-            transform.localScale = new Vector3(key, 1, 1);
-        }
-           
- 
-        }
-       
-        }
+    }
 
