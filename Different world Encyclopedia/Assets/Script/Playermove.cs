@@ -8,8 +8,10 @@ public class Playermove : MonoBehaviour
     float jumpForce = 400.0f;
     float walkForce = 30.0f;
     float maxWalkSpeed = 3.1f;
-    float dashForce = 600.0f;
+    float dashForce = 400.0f;
     float time = 0f;
+    float dashForce2 = 400.0f;
+    float time2 = 0f;
     public int jumpcount = 2;
     public bool isGrounded = false;
 
@@ -47,20 +49,19 @@ public class Playermove : MonoBehaviour
         }
         if ((Time.time < time + 1f) && (Input.GetKeyDown(KeyCode.C)))
         {
-            this.rigid2D.AddForce(transform.right * this.dashForce);
-            {
+        this.rigid2D.AddForce(transform.right * this.dashForce);
+        {
 
-                }
-            }
-
+         }
+         }
         //왼쪽으로 대쉬
         if (Input.GetKeyDown(KeyCode.C) && (Input.GetKey(KeyCode.LeftArrow)))
         {
-            time = Time.time;
+        time2 = Time.time;
         }
-        if ((Time.time < time + 1f) && (Input.GetKeyDown(KeyCode.C)))
+        if ((Time.time < time2 + 1f) && (Input.GetKeyDown(KeyCode.C)))
         {
-            this.rigid2D.AddForce(transform.right * -1 * this.dashForce);
+        this.rigid2D.AddForce(transform.right * -1 * this.dashForce2);
             {
 
             }
