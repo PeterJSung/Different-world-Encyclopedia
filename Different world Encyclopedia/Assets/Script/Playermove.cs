@@ -4,14 +4,14 @@ using System.Collections;
 public class Playermove : MonoBehaviour
 {
     Rigidbody2D rigid2D;
-
+    
     float jumpForce = 400.0f;
     float walkForce = 30.0f;
     float maxWalkSpeed = 3.1f;
-    float dashForce = 400.0f;
-    float time = 0f;
-    float dashForce2 = 400.0f;
-    float time2 = 0f;
+    private float coolTime = 0.5f;
+    private float lastCheckTime;
+    private float coolTime2 = 0.5f;
+    private float lastCheckTime2;
     public int jumpcount = 2;
     public bool isGrounded = false;
 
@@ -26,7 +26,7 @@ public class Playermove : MonoBehaviour
     {
 
         if (col.gameObject.tag == "Ground")
-            isGrounded = true;
+        isGrounded = true;
         jumpcount = 2;
     }
 
@@ -42,29 +42,23 @@ public class Playermove : MonoBehaviour
                 jumpcount--;
             }
 
-        //오른쪽으로 대쉬
+        //오른쪽으로 대쉬 쿨타임 1초
         if (Input.GetKeyDown(KeyCode.C) && (Input.GetKey(KeyCode.RightArrow)))
         {
-            time = Time.time;
+            if ((lastCheckTime + coolTime) < Time.time)
+            {
+                transform.Translate(2, 0, 0);
+                lastCheckTime = Time.time;
         }
-        if ((Time.time < time + 1f) && (Input.GetKeyDown(KeyCode.C)))
-        {
-        this.rigid2D.AddForce(transform.right * this.dashForce);
-        {
-
-         }
-         }
-        //왼쪽으로 대쉬
+        }
+        //왼쪽으로 대쉬 쿨타임 1초
         if (Input.GetKeyDown(KeyCode.C) && (Input.GetKey(KeyCode.LeftArrow)))
         {
-        time2 = Time.time;
-        }
-        if ((Time.time < time2 + 1f) && (Input.GetKeyDown(KeyCode.C)))
+        if ((lastCheckTime2 + coolTime2) < Time.time)
         {
-        this.rigid2D.AddForce(transform.right * -1 * this.dashForce2);
-            {
-
-            }
+        transform.Translate(-2, 0, 0);
+        lastCheckTime2 = Time.time;
+        }
         }
 
 
