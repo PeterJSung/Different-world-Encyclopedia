@@ -56,14 +56,16 @@ public class SceneConvertAnimation : MonoBehaviour
     {
         isPlaying = true;
 
-        Color color = fadeOutColor;
+        Color color;
         if (isFadeIn)
         {
+            color = fadeInColor;
             start = 1f;
             end = 0f;
         }
         else
         {
+            color = fadeOutColor;
             start = 0f;
             end = 1f;
         }

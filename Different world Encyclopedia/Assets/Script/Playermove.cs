@@ -1,10 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public class Playermove : MonoBehaviour
 {
+    public const float MOVE_WEIGHT = 0.04f;
+    public const float DASH_MOVE_WEIGHT = 0.08f;
     Rigidbody2D rigid2D;
-
     float jumpForce = 400.0f;
     float walkForce = 30.0f;
     float maxWalkSpeed = 3.1f;
@@ -15,8 +17,24 @@ public class Playermove : MonoBehaviour
     public int jumpcount = 2;
     public bool isGrounded = false;
 
+    public class MoveFlag
+    {
+        public float tDown;
+        public KeyCode prevValue;
+        public float moveWeight;
+        public MoveFlag()
+        {
+            prevValue = 0;
+            tDown = Time.time;
+            moveWeight = 0.0f;
+        }
+    }
+
+    MoveFlag moveValue;
+
     void Start()
     {
+        moveValue = new MoveFlag();
         this.rigid2D = GetComponent<Rigidbody2D>();
         jumpcount = 0;
     }
@@ -34,6 +52,7 @@ public class Playermove : MonoBehaviour
     void Update()
     {
         if (isGrounded)
+        {
             // 점프한다
             if (Input.GetKeyDown(KeyCode.X) && jumpcount > 0)
 
@@ -41,54 +60,89 @@ public class Playermove : MonoBehaviour
                 this.rigid2D.AddForce(transform.up * this.jumpForce);
                 jumpcount--;
             }
-
-        //오른쪽으로 대쉬
-        if (Input.GetKeyDown(KeyCode.C) && (Input.GetKey(KeyCode.RightArrow)))
-        {
-            time = Time.time;
-        }
-        if ((Time.time < time + 1f) && (Input.GetKeyDown(KeyCode.C)))
-        {
-        this.rigid2D.AddForce(transform.right * this.dashForce);
-        {
-
-         }
-         }
-        //왼쪽으로 대쉬
-        if (Input.GetKeyDown(KeyCode.C) && (Input.GetKey(KeyCode.LeftArrow)))
-        {
-        time2 = Time.time;
-        }
-        if ((Time.time < time2 + 1f) && (Input.GetKeyDown(KeyCode.C)))
-        {
-        this.rigid2D.AddForce(transform.right * -1 * this.dashForce2);
-            {
-
-            }
         }
 
-
-        // 좌우이동
-        int key = 0;
-            if (Input.GetKey(KeyCode.RightArrow)) key = 1;
-            if (Input.GetKey(KeyCode.LeftArrow)) key = -1;
-
-            // 플레이어 속도
-            float speedx = Mathf.Abs(this.rigid2D.velocity.x);
-
-            // 속도 제한
-            if (speedx < this.maxWalkSpeed)
+        if (Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            if (moveValue.prevValue == KeyCode.RightArrow && Time.time - moveValue.tDown < 0.5f)
             {
-                this.rigid2D.AddForce(transform.right * key * this.walkForce);
+                moveValue.moveWeight = DASH_MOVE_WEIGHT;
             }
-
-            // 캐릭터 스프라이트 반전
-            if (key != 0)
+            else
             {
-                transform.localScale = new Vector3(key, 1, 1);
+                moveValue.moveWeight = MOVE_WEIGHT;
             }
+            moveValue.tDown = Time.time;
+            moveValue.prevValue = KeyCode.RightArrow;
+        }
+        else if (Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            if (moveValue.prevValue == KeyCode.LeftArrow && Time.time - moveValue.tDown < 0.5f)
+            {
+                moveValue.moveWeight = -DASH_MOVE_WEIGHT;
+            }
+            else
+            {
+                moveValue.moveWeight = -MOVE_WEIGHT;
 
+            }
+            moveValue.tDown = Time.time;
+            moveValue.prevValue = KeyCode.LeftArrow;
+        }
+        else if (!Input.GetKey(KeyCode.RightArrow) && !Input.GetKey(KeyCode.LeftArrow))
+        {
+            moveValue.moveWeight = 0;
+        }
+        this.transform.Translate(moveValue.moveWeight, 0, 0);
+
+        
+
+        // 캐릭터 스프라이트 반전
+        if (moveValue.moveWeight > 0)
+        {
+            transform.localScale = new Vector3(1, 1, 1);
+        }
+        else if (moveValue.moveWeight < 0)
+        {
+            transform.localScale = new Vector3(-1, 1, 1);
         }
 
     }
+
+    void DEBUG_KEY_FUNCTION()
+    {
+        if (Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            Debug.Log("[RIGHT]KEY DOWN");
+        }
+
+        if (Input.GetKeyUp(KeyCode.RightArrow))
+        {
+            Debug.Log("[RIGHT]KEY UP");
+        }
+
+        if (Input.GetKey(KeyCode.RightArrow))
+        {
+            Debug.Log("[RIGHT]KEY PRESS");
+        }
+
+
+        //
+        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            Debug.Log("[LEFT]KEY DOWN");
+        }
+
+        if (Input.GetKeyUp(KeyCode.LeftArrow))
+        {
+            Debug.Log("[LEFT]KEY UP");
+        }
+
+        if (Input.GetKey(KeyCode.LeftArrow))
+        {
+            Debug.Log("[LEFT]KEY PRESS");
+        }
+    }
+
+}
 

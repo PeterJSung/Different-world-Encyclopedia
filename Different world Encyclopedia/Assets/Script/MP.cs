@@ -5,19 +5,25 @@ using UnityEngine.UI;
 
 public class MP : MonoBehaviour
 {
-    GameObject MPGAGE;
+    public GameObject MPGAGE;
 
 
     // Use this for initialization
     void Start()
     {
-        this.MPGAGE = GameObject.Find("MPGAGE");
+    }
+
+    void Update()
+    {
+        DecreaseMp();
     }
 
     // Update is called once per frame
     public void DecreaseMp()
     {
-        this.MPGAGE.GetComponent<Image>().fillAmount -= 0.1f;
-
+        if (MPGAGE)
+        {
+            this.MPGAGE.GetComponent<Image>().fillAmount -= 0.001f;
+        }
     }
 }
