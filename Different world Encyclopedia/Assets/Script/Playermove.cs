@@ -10,9 +10,9 @@ public class Playermove : MonoBehaviour
     float jumpForce = 400.0f;
     float walkForce = 30.0f;
     float maxWalkSpeed = 3.1f;
-    float dashForce = 400.0f;
+    float dashForce = 800.0f;
     float time = 0f;
-    float dashForce2 = 400.0f;
+    float dashForce2 = 800.0f;
     float time2 = 0f;
     public int jumpcount = 2;
     public bool isGrounded = false;
