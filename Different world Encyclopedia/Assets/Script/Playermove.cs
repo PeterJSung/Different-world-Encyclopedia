@@ -2,74 +2,84 @@
 using System.Collections;
 using System;
 
+public enum CharatorType
+{
+    ALLIGATOR, //악어야
+    MAGITION, // 마법사
+    DRAON, // 드래곤
+}
+
+
+public class MoveFlag
+{
+    public float tDown;
+    public KeyCode prevValue;
+    public float moveWeight;
+    public MoveFlag()
+    {
+        prevValue = 0;
+        tDown = Time.time;
+        moveWeight = 0.0f;
+    }
+}
+
 public class Playermove : MonoBehaviour
 {
-    public const float MOVE_WEIGHT = 0.04f;
-    public const float DASH_MOVE_WEIGHT = 0.08f;
-    Rigidbody2D rigid2D;
-    public const float JUMP_FORCE = 400.0f;
-   
-    public int jumpcount = 2;
-    public bool isGrounded = false;
+    //캐릭터는 7 Status 를 가지고 있음.
+    //1. 피격
+    //2. 사망
+    //3. 사망
+    //4. 공격
+    //5. 이동
+    //6. 대시
+    //7. 스킬
 
-    public class MoveFlag
+    public CharatorType selectedCharactorType;
+
+    public CharatorType currentPlayerType
     {
-        public float tDown;
-        public KeyCode prevValue;
-        public float moveWeight;
-        public MoveFlag()
+        get
         {
-            prevValue = 0;
-            tDown = Time.time;
-            moveWeight = 0.0f;
+            return selectedCharactorType;
+        }
+        set
+        {
+            selectedCharactorType = value;
         }
     }
+
+    public float MOVE_WEIGHT;
+    public float DASH_MOVE_WEIGHT;
+    Rigidbody2D rigid2D;
+    public float JUMP_FORCE;
+   
+    public int jumpcount = 2;
+    public int blinkcount = 1;
+    public bool isGrounded = false;
+
 
     MoveFlag moveValue;
 
+    void Awake()
+    {
+
+    }
+
     void Start()
     {
-        moveValue = new MoveFlag();
-        this.rigid2D = GetComponent<Rigidbody2D>();
-        jumpcount = 0;
+        
     }
 
     private void OnCollisionEnter2D(Collision2D col)
-
     {
-        switch (col.gameObject.tag)
-        {
-            case "Tile":
-
-                TileType nowTile = col.gameObject.GetComponent<TileScript>().SelectTileType;
-                if (nowTile == TileType.GROUND ||
-                    nowTile == TileType.FLOAT_GROUND)
-                {
-                    isGrounded = true;
-                    jumpcount = 2;
-                }
-                break;
-            case "Monster":
-                break;
-            case "Trap":
-                break;
-        }
+        CheckCollision(col);
     }
 
 
     void Update()
     {
-        if (isGrounded)
-        {
-            // 점프한다
-            if (Input.GetKeyDown(KeyCode.X) && jumpcount > 0)
-
-            {
-                this.rigid2D.AddForce(transform.up * JUMP_FORCE);
-                jumpcount--;
-            }
-        }
-
+        
+        CheckJump();
         CheckMove();
 
 
@@ -90,7 +100,16 @@ public class Playermove : MonoBehaviour
 
     void CheckJump()
     {
+        if (isGrounded)
+        {
+            // 점프한다
+            if (Input.GetKeyDown(KeyCode.X) && jumpcount > 0)
 
+            {
+                this.rigid2D.AddForce(transform.up * JUMP_FORCE);
+                jumpcount--;
+            }
+        }
     }
 
     void CheckMove()
@@ -125,6 +144,56 @@ public class Playermove : MonoBehaviour
         else if (!Input.GetKey(KeyCode.RightArrow) && !Input.GetKey(KeyCode.LeftArrow))
         {
             moveValue.moveWeight = 0;
+        }
+    }
+
+    void CheckCollision(Collision2D col)
+    {
+        switch (col.gameObject.tag)
+        {
+            case "Tile":
+
+                TileType nowTile = col.gameObject.GetComponent<TileScript>().SelectTileType;
+                if (nowTile == TileType.GROUND ||
+                    nowTile == TileType.FLOAT_GROUND)
+                {
+                    isGrounded = true;
+                    jumpcount = 2;
+                }
+                break;
+            case "Monster":
+                break;
+            case "Trap":
+                break;
+        }
+    }
+    
+    void initialize()
+    {
+        //Object Initialize
+        moveValue = new MoveFlag();
+        this.rigid2D = GetComponent<Rigidbody2D>();
+        jumpcount = 0;
+
+        //CharatorData Initialize
+        switch (currentPlayerType)
+        {
+            case CharatorType.ALLIGATOR:
+                
+                MOVE_WEIGHT = 0.08f;
+                JUMP_FORCE = 400.0f;
+                jumpcount = 2;
+                blinkcount = 0;
+                break;
+            case CharatorType.MAGITION:
+                break;
+            case CharatorType.DRAON:
+                break;
+            default:
+                //설정되지 않은 캐릭터면 ASSERT
+                Debug.Assert(true);
+                Debug.Assert(false);
+                break;
         }
     }
 
