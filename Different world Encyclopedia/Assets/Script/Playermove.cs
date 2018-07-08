@@ -6,35 +6,34 @@ public enum CharatorType
 {
     ALLIGATOR, //악어야
     MAGITION, // 마법사
-    DRAON, // 드래곤
+    DRAGON, // 드래곤
 }
 
-
-public class MoveFlag
+public enum CharatorStatus
 {
-    public float tDown;
-    public KeyCode prevValue;
-    public float moveWeight;
-    public MoveFlag()
-    {
-        prevValue = 0;
-        tDown = Time.time;
-        moveWeight = 0.0f;
-    }
+    NULL = 0, // 아무것도 안함.
+    DEAD = 1, //피격
+    HIT = 2, //사망
+    JUMP = 4, //점프
+    ATTACK = 8, // 공격
+    MOVE = 16, //이동
+    DASH_MOVE = 32, // 대시
+    SKILL = 64 //스킬
 }
 
 public class Playermove : MonoBehaviour
 {
     //캐릭터는 7 Status 를 가지고 있음.
-    //1. 피격
-    //2. 사망
-    //3. 사망
-    //4. 공격
-    //5. 이동
-    //6. 대시
-    //7. 스킬
+    //1. 사망 1순위
+    //2. 피격 2순위
+    //3. 점프 3순위
+    //4. 공격 3순위
+    //5. 이동 3순위
+    //6. 대시 3순위
+    //7. 스킬 3순위
 
     public CharatorType selectedCharactorType;
+    public GameObject weaponObject;
 
     public CharatorType currentPlayerType
     {
@@ -48,53 +47,109 @@ public class Playermove : MonoBehaviour
         }
     }
 
-    public float MOVE_WEIGHT;
-    public float DASH_MOVE_WEIGHT;
+    //GlobalObject
     Rigidbody2D rigid2D;
-    public float JUMP_FORCE;
-   
-    public int jumpcount = 2;
-    public int blinkcount = 1;
-    public bool isGrounded = false;
 
+    //Charator Option
+    private float MOVE_WEIGHT;
+    private float DASH_MOVE_WEIGHT;
+    private float JUMP_FORCE;
+
+    private int jumpcount = 1;
+    private int blinkcount = 1;
+    private bool isGrounded = false;
+    private CharatorStatus nowStatus = CharatorStatus.NULL;
+
+    private float attackSpeed = 1.0f;
 
     MoveFlag moveValue;
 
+    //Charactor Handler
+    private Weapon weaponController = null;
+
     void Awake()
     {
-
+        this.initialize();
     }
 
     void Start()
     {
-        
+
     }
 
     private void OnCollisionEnter2D(Collision2D col)
     {
-        CheckCollision(col);
+        this.CheckCollision(col);
     }
 
 
     void Update()
     {
-        
-        CheckJump();
-        CheckMove();
+        this.CheckAttack();
+        this.CheckJump();
+        this.CheckMove();
 
+        this.DoingAction();
+        this.RenderCharactor();
+    }
 
-        this.transform.Translate(moveValue.moveWeight, 0, 0);
+    void RenderCharactor()
+    {
 
-        
+    }
 
-        // 캐릭터 스프라이트 반전
-        if (moveValue.moveWeight > 0)
+    void DoingAction()
+    {
+        if (this.IsStatus(CharatorStatus.DEAD))
         {
-            transform.localScale = new Vector3(1, 1, 1);
+            //사망 시 1순위 이벤트
         }
-        else if (moveValue.moveWeight < 0)
+        else
         {
-            transform.localScale = new Vector3(-1, 1, 1);
+            if (this.IsStatus(CharatorStatus.HIT))
+            {
+                //피격 시 2순위 이벤트
+            }
+            else
+            {
+                //나머지 3순위 이벤트 모두 동일
+                if (this.IsStatus(CharatorStatus.MOVE) || this.IsStatus(CharatorStatus.DASH_MOVE))
+                {
+                    //이동
+                    this.transform.Translate(moveValue.moveWeight, 0, 0);
+                    bool isRight = this.moveValue.moveWeight > 0;
+                    transform.localScale = new Vector3(isRight ? 1 : -1, 1, 1);
+                    weaponController.setAttackDirection(isRight);
+                }
+
+                if (this.IsStatus(CharatorStatus.JUMP))
+                {
+                    // 점프
+                    this.rigid2D.AddForce(transform.up * JUMP_FORCE);
+                    nowStatus &= ~CharatorStatus.JUMP;
+                }
+
+                if (this.IsStatus(CharatorStatus.ATTACK))
+                {
+                    // 공격
+                    weaponController.AttackMotion();
+                    nowStatus &= ~CharatorStatus.ATTACK;
+                }
+
+                if (this.IsStatus(CharatorStatus.SKILL))
+                {
+                    // 스킬
+                }
+            }
+        }
+
+    }
+
+    void CheckAttack()
+    {
+        if ((Input.GetKeyDown(KeyCode.Z) || Input.GetKey(KeyCode.Z)) && weaponController.CanAttackMotion())
+        {
+            nowStatus |= CharatorStatus.ATTACK;
         }
     }
 
@@ -104,9 +159,8 @@ public class Playermove : MonoBehaviour
         {
             // 점프한다
             if (Input.GetKeyDown(KeyCode.X) && jumpcount > 0)
-
             {
-                this.rigid2D.AddForce(transform.up * JUMP_FORCE);
+                nowStatus |= CharatorStatus.JUMP;
                 jumpcount--;
             }
         }
@@ -118,10 +172,12 @@ public class Playermove : MonoBehaviour
         {
             if (moveValue.prevValue == KeyCode.RightArrow && Time.time - moveValue.tDown < 0.5f)
             {
+                nowStatus |= CharatorStatus.DASH_MOVE;
                 moveValue.moveWeight = DASH_MOVE_WEIGHT;
             }
             else
             {
+                nowStatus |= CharatorStatus.MOVE;
                 moveValue.moveWeight = MOVE_WEIGHT;
             }
             moveValue.tDown = Time.time;
@@ -131,10 +187,13 @@ public class Playermove : MonoBehaviour
         {
             if (moveValue.prevValue == KeyCode.LeftArrow && Time.time - moveValue.tDown < 0.5f)
             {
+                nowStatus |= CharatorStatus.DASH_MOVE;
                 moveValue.moveWeight = -DASH_MOVE_WEIGHT;
+
             }
             else
             {
+                nowStatus |= CharatorStatus.MOVE;
                 moveValue.moveWeight = -MOVE_WEIGHT;
 
             }
@@ -143,6 +202,8 @@ public class Playermove : MonoBehaviour
         }
         else if (!Input.GetKey(KeyCode.RightArrow) && !Input.GetKey(KeyCode.LeftArrow))
         {
+            nowStatus &= ~CharatorStatus.MOVE;
+            nowStatus &= ~CharatorStatus.DASH_MOVE;
             moveValue.moveWeight = 0;
         }
     }
@@ -167,7 +228,12 @@ public class Playermove : MonoBehaviour
                 break;
         }
     }
-    
+
+    bool IsStatus(CharatorStatus argStat)
+    {
+        return (nowStatus & argStat) > 0;
+    }
+
     void initialize()
     {
         //Object Initialize
@@ -179,15 +245,16 @@ public class Playermove : MonoBehaviour
         switch (currentPlayerType)
         {
             case CharatorType.ALLIGATOR:
-                
-                MOVE_WEIGHT = 0.08f;
+                DASH_MOVE_WEIGHT = 0.08f;
+                MOVE_WEIGHT = 0.04f;
                 JUMP_FORCE = 400.0f;
                 jumpcount = 2;
                 blinkcount = 0;
+                attackSpeed = 0.25f;
                 break;
             case CharatorType.MAGITION:
                 break;
-            case CharatorType.DRAON:
+            case CharatorType.DRAGON:
                 break;
             default:
                 //설정되지 않은 캐릭터면 ASSERT
@@ -195,6 +262,13 @@ public class Playermove : MonoBehaviour
                 Debug.Assert(false);
                 break;
         }
+
+        if( weaponObject)
+        {
+            weaponController = weaponObject.GetComponent<Weapon>();
+            weaponController.setParameter(attackSpeed, currentPlayerType);
+        }
+
     }
 
     void DEBUG_KEY_FUNCTION()
@@ -232,5 +306,18 @@ public class Playermove : MonoBehaviour
         }
     }
 
+
+    public class MoveFlag
+    {
+        public float tDown;
+        public KeyCode prevValue;
+        public float moveWeight;
+        public MoveFlag()
+        {
+            prevValue = 0;
+            tDown = Time.time;
+            moveWeight = 0.0f;
+        }
+    }
 }
 
