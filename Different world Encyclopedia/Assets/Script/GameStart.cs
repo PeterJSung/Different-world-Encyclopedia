@@ -27,6 +27,6 @@ public class GameStart : MonoBehaviour
 
     void NextScene()
     {
-        SceneManager.LoadScene("Stage0");
+        SceneManager.LoadScene("Stage0-1");
     }
 }
