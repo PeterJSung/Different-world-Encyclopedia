@@ -23,12 +23,22 @@ public class Weapon : MonoBehaviour
 
     private CharatorType currentPlayerType;
 
-    ArrayList sheetingObject = new ArrayList();
-    ArrayList endObject = new ArrayList();
+    Object[] sheetingObject = null;
+    Object[] endObject = null;
 
-    private void OnCollisionEnter2D(Collision2D col)
+    ArrayList isHiitedList = new ArrayList();
+    private void OnTriggerStay2D(Collider2D other)
     {
-        Debug.Log(col);
+        Debug.Log("TRIGGERD");
+        if (!canAttack)
+        {
+            //공격 도중에만 충돌 체크
+            if(other.gameObject.layer == GlobalLayerMask.ENEMY_MASK)
+            {
+                //
+                isHiitedList.Add(other.gameObject);
+            }
+        }
     }
     // Use this for initialization
     void Awake()
@@ -62,8 +72,9 @@ public class Weapon : MonoBehaviour
     //Color.a = 0 투명
     IEnumerator AttackAnimation(float totalduration)
     {
+        isHiitedList.Clear();
         canAttack = false;
-
+        Debug.Log("START MOTION");
         float sRotValue = START_ROTATE;
         float eRotValue = END_ROTATE;
 
@@ -98,9 +109,6 @@ public class Weapon : MonoBehaviour
 
             parentsObject.localEulerAngles = tempVector;
             renderEffect.material.color = effectTransparent;
-
-            Debug.Log(currentStep);
-            Debug.Log(END_ROTATE);
             yield return null;
         }
         //초기화
@@ -109,7 +117,19 @@ public class Weapon : MonoBehaviour
         effectTransparent.a = 0.0f;
         renderEffect.material.color = effectTransparent;
 
+        if(isHiitedList.Count > 0)
+        {
+            //0 이상이면 무기에 맞는놈이있다.
+            //Hit and 넉벡
+            Debug.Log("HIT");
+        } else
+        {
+            //무기에 맞는놈이 없으므로 파이어볼
+            Debug.Log("Fire Ball");
+        }
+
         canAttack = true;
+        Debug.Log("END MOTION");
     }
 
     public void setAttackDirection(bool argIsRight)
@@ -125,7 +145,7 @@ public class Weapon : MonoBehaviour
         attackSpeed = argSpeed;
         currentPlayerType = argType;
 
-        string assetDirectory = Application.dataPath + "/Sprite/Weapon";
+        string assetDirectory = "Weapon";
         switch (currentPlayerType)
         {
             case CharatorType.ALLIGATOR:
@@ -144,23 +164,9 @@ public class Weapon : MonoBehaviour
         }
         sheetingDiectory = assetDirectory + "/AttackSheeting";
         bulletEndDirectory = assetDirectory + "/AttackEnd";
-        /*
-        string[] nameList = Directory.GetFiles(sheetingDiectory, "*.png");
-        for (int i = 0; i < nameList.Length; i++)
-        {
-            sheetingObject.Add(AssetDatabase.LoadAssetAtPath(nameList[i], typeof(Object)));
-        }
 
-        nameList = Directory.GetFiles(bulletEndDirectory, "*.png");
-        Debug.Log(nameList[0]);
-        for (int i = 0; i < nameList.Length; i++)
-        {
-            endObject.Add(AssetDatabase.LoadAssetAtPath(nameList[i], typeof(Object)));
-        }
-        */
-        endObject.Add(AssetDatabase.LoadAssetAtPath(
-            "Sprite/Weapon/Alligator/AttackSheeting/Fireball2.png", typeof(Object)));
-        Debug.Log(endObject[0]);
+        sheetingObject = Resources.LoadAll(sheetingDiectory, typeof(Texture2D));
+        endObject = Resources.LoadAll(bulletEndDirectory, typeof(Texture2D));
     }
 
     public bool CanAttackMotion()
