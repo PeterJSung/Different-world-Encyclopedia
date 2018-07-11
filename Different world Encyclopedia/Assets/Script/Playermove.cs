@@ -142,7 +142,6 @@ public class Playermove : MonoBehaviour
                 }
             }
         }
-
     }
 
     void CheckAttack()

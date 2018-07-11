@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
+using BulletModelDefine;
 
 public class Weapon : MonoBehaviour
 {
@@ -23,8 +24,8 @@ public class Weapon : MonoBehaviour
 
     private CharatorType currentPlayerType;
 
-    Object[] sheetingObject = null;
-    Object[] endObject = null;
+    Sprite[] sheetingObject = null;
+    Sprite[] endObject = null;
 
     ArrayList isHiitedList = new ArrayList();
     private void OnTriggerStay2D(Collider2D other)
@@ -35,7 +36,6 @@ public class Weapon : MonoBehaviour
             //공격 도중에만 충돌 체크
             if(other.gameObject.layer == GlobalLayerMask.ENEMY_MASK)
             {
-                //
                 isHiitedList.Add(other.gameObject);
             }
         }
@@ -74,7 +74,6 @@ public class Weapon : MonoBehaviour
     {
         isHiitedList.Clear();
         canAttack = false;
-        Debug.Log("START MOTION");
         float sRotValue = START_ROTATE;
         float eRotValue = END_ROTATE;
 
@@ -124,12 +123,36 @@ public class Weapon : MonoBehaviour
             Debug.Log("HIT");
         } else
         {
+
+            //Only For Test
             //무기에 맞는놈이 없으므로 파이어볼
             Debug.Log("Fire Ball");
+            GameObject prefab = Resources.Load("Prefabs/BulletFireBall") as GameObject;
+            // Resources/Prefabs/Bullet.prefab 로드
+            GameObject bullet = MonoBehaviour.Instantiate(prefab) as GameObject;
+            // 실제 인스턴스 생성. GameObject name의 기본값은 Bullet (clone)
+            bullet.transform.position = new Vector3(parentsObject.transform.position.x +
+                (isRight == true? +0.2f : -0.2f),
+                parentsObject.transform.position.y,
+                parentsObject.transform.position.z);
+            bullet.transform.localScale = new Vector3(isRight ? bullet.transform.localScale.x : -bullet.transform.localScale.x,
+                bullet.transform.localScale.y,
+                bullet.transform.localScale.z);
+            BulletController bController = bullet.GetComponent<BulletController>();
+            BulletModel.BulletData argData = new BulletModel.BulletData();
+            argData.dir = (isRight ? BulletModel.BULLET_DIRECTION.RIGHT : BulletModel.BULLET_DIRECTION.LEFT);
+            argData.motion = BulletModel.MOTION_TYPE.STRAIGHT;
+            argData.sheetingsprite = sheetingObject;
+            argData.endSprite = endObject;
+            argData.weight = new Vector3(0.04f, 0.04f, 0.04f);
+            argData.penetrate = new BulletModel.PenetrateData(0,100.0f);
+            argData.disapearTiming = 0.7f;
+            argData.sheetingLength = 5.0f;
+            argData.tLayer = new ArrayList();
+            argData.tLayer.Add(GlobalLayerMask.ENEMY_MASK);
+            bController.setInitialize(argData);
         }
-
         canAttack = true;
-        Debug.Log("END MOTION");
     }
 
     public void setAttackDirection(bool argIsRight)
@@ -165,8 +188,8 @@ public class Weapon : MonoBehaviour
         sheetingDiectory = assetDirectory + "/AttackSheeting";
         bulletEndDirectory = assetDirectory + "/AttackEnd";
 
-        sheetingObject = Resources.LoadAll(sheetingDiectory, typeof(Texture2D));
-        endObject = Resources.LoadAll(bulletEndDirectory, typeof(Texture2D));
+        sheetingObject = Resources.LoadAll<Sprite>(sheetingDiectory);
+        endObject = Resources.LoadAll<Sprite>(bulletEndDirectory);
     }
 
     public bool CanAttackMotion()
