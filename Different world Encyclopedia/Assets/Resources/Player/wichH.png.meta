@@ -101,7 +101,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 94501456ea712884abd72baeea448138
+      spriteID: 0f1e1bdafef171746b84c195db8cbf13
       vertices: []
       indices: 
       edges: []
@@ -121,7 +121,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 439b817d458d94e44857ce602d6dc733
+      spriteID: 2cbeaa05fb31378409f816a833a8510e
       vertices: []
       indices: 
       edges: []
@@ -141,7 +141,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 428d363dd0086c0439c6e70741e6b0df
+      spriteID: 59cb4a4e8d0aad049bbff26be4238782
       vertices: []
       indices: 
       edges: []
@@ -161,7 +161,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 54a9d88b574deda44bd8ea655068096d
+      spriteID: b6d26ff324d954f46bb701e269f5c5ee
       vertices: []
       indices: 
       edges: []
@@ -170,9 +170,9 @@ TextureImporter:
       name: wichH_4
       rect:
         serializedVersion: 2
-        x: 263
+        x: 259
         y: 3
-        width: 50
+        width: 56
         height: 72
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -181,7 +181,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 43f508ef9201596498189acbf3a3fc12
+      spriteID: eba383153ccd3264ba535c1d357e98d4
       vertices: []
       indices: 
       edges: []
@@ -189,7 +189,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: 9e0500e141e1dcb4abe52522db07fdd0
+    spriteID: f0ab08e044d68b44a9d00d12b046fbed
     vertices: []
     indices: 
     edges: []

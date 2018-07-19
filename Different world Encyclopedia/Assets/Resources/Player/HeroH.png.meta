@@ -101,7 +101,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: df5a6b04d65fba04abe0582b496a8fc2
+      spriteID: ea62958cdf9f25d44b78b530d1e066bb
       vertices: []
       indices: 
       edges: []
@@ -121,7 +121,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d8b5f175481ae3841a8ceb1ef6a9b7a5
+      spriteID: ce0b4fb40b5acb241bf44d79ca37dbfe
       vertices: []
       indices: 
       edges: []
@@ -141,7 +141,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ba71991a7b91de94cba0d0da9da5be06
+      spriteID: 97da3d82b00fea240b36ac6e75f727da
       vertices: []
       indices: 
       edges: []
@@ -161,7 +161,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 954d85ef26cab4746a20c6bd9deb4902
+      spriteID: d04ee332fb3a1f1429aac7f4f5919c21
       vertices: []
       indices: 
       edges: []
@@ -170,10 +170,10 @@ TextureImporter:
       name: HeroH_4
       rect:
         serializedVersion: 2
-        x: 329
+        x: 333
         y: 0
-        width: 62
-        height: 80
+        width: 53
+        height: 79
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -181,7 +181,7 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: c4da84f2dc0b85b419e2f13f480ea90a
+      spriteID: a60a5659a6a904c4ba7b1b574947d054
       vertices: []
       indices: 
       edges: []
@@ -189,7 +189,7 @@ TextureImporter:
     outline: []
     physicsShape: []
     bones: []
-    spriteID: f9182772b31917c4eab21518b5bca817
+    spriteID: 464efb2a393e2b2409485c061e947edf
     vertices: []
     indices: 
     edges: []
