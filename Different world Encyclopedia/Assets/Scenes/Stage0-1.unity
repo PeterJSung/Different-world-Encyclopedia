@@ -237,8 +237,9 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 130913521}
+  - component: {fileID: 130913522}
   m_Layer: 0
-  m_Name: Character
+  m_Name: CharacterTemplate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -258,6 +259,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &130913522
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 130913520}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e34629aa4a0ea44082bc594a5d9133d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  charObj: {fileID: 262383701}
 --- !u!1 &202300399
 GameObject:
   m_ObjectHideFlags: 0
@@ -387,7 +400,7 @@ GameObject:
   - component: {fileID: 262383705}
   - component: {fileID: 262383707}
   m_Layer: 11
-  m_Name: dkrdjdiH_0
+  m_Name: Character
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -526,7 +539,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: efcf01d227aac9e4ab2789e60fd4efe6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectedCharactorType: 0
   weaponObject: {fileID: 2002655311}
 --- !u!1 &278126925
 GameObject:
@@ -1102,7 +1114,7 @@ GameObject:
   - component: {fileID: 530242664}
   - component: {fileID: 530242665}
   m_Layer: 12
-  m_Name: Swing
+  m_Name: WeaponEffect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2305,7 +2317,7 @@ TilemapRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: -20
+  m_SortingOrder: -2
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
   m_MaxChunkCount: 16
@@ -6018,7 +6030,7 @@ GameObject:
   - component: {fileID: 2002655315}
   - component: {fileID: 2002655314}
   m_Layer: 12
-  m_Name: Merona
+  m_Name: Weapon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

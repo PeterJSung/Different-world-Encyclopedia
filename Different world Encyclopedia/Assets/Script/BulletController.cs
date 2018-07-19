@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using BulletModelDefine;
+using DefineBulletModel;
 
 //탄알의 위치는 시전자가 구현한다. 탄알은 움직이는 것만 고려하자.
 

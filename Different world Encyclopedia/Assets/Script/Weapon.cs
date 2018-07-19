@@ -1,9 +1,7 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using UnityEditor;
 using UnityEngine;
-using BulletModelDefine;
+using DefineBulletModel;
+using DefinitionChar;
 
 public class Weapon : MonoBehaviour
 {
@@ -22,7 +20,7 @@ public class Weapon : MonoBehaviour
     private bool isRight = true;
     private float attackSpeed = 1.0f;
 
-    private CharatorType currentPlayerType;
+    private CaracterInfo.CHAR_TYPE currentPlayerType;
 
     Sprite[] sheetingObject = null;
     Sprite[] endObject = null;
@@ -160,7 +158,7 @@ public class Weapon : MonoBehaviour
         isRight = argIsRight;
     }
 
-    public void setParameter(float argSpeed, CharatorType argType)
+    public void setParameter(float argSpeed, CaracterInfo.CHAR_TYPE argType)
     {
         string sheetingDiectory = "";
         string bulletEndDirectory = "";
@@ -171,13 +169,13 @@ public class Weapon : MonoBehaviour
         string assetDirectory = "Weapon";
         switch (currentPlayerType)
         {
-            case CharatorType.ALLIGATOR:
+            case CaracterInfo.CHAR_TYPE.ALLIGATOR:
                 assetDirectory += "/Alligator";
                 break;
-            case CharatorType.MAGITION:
+            case CaracterInfo.CHAR_TYPE.MAGITION:
                 assetDirectory += "/Magition";
                 break;
-            case CharatorType.DRAGON:
+            case CaracterInfo.CHAR_TYPE.DRAGON:
                 assetDirectory += "/Dragon";
                 break;
             default:
