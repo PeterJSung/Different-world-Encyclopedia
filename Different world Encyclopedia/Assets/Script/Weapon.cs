@@ -20,7 +20,7 @@ public class Weapon : MonoBehaviour
     private bool isRight = true;
     private float attackSpeed = 1.0f;
 
-    private CaracterInfo.CHAR_TYPE currentPlayerType;
+    private CustomCharacterInfo.CHAR_TYPE currentPlayerType;
 
     Sprite[] sheetingObject = null;
     Sprite[] endObject = null;
@@ -158,7 +158,7 @@ public class Weapon : MonoBehaviour
         isRight = argIsRight;
     }
 
-    public void setParameter(float argSpeed, CaracterInfo.CHAR_TYPE argType)
+    public void setParameter(float argSpeed, CustomCharacterInfo.CHAR_TYPE argType)
     {
         string sheetingDiectory = "";
         string bulletEndDirectory = "";
@@ -169,13 +169,13 @@ public class Weapon : MonoBehaviour
         string assetDirectory = "Weapon";
         switch (currentPlayerType)
         {
-            case CaracterInfo.CHAR_TYPE.ALLIGATOR:
+            case CustomCharacterInfo.CHAR_TYPE.ALLIGATOR:
                 assetDirectory += "/Alligator";
                 break;
-            case CaracterInfo.CHAR_TYPE.MAGITION:
+            case CustomCharacterInfo.CHAR_TYPE.MAGITION:
                 assetDirectory += "/Magition";
                 break;
-            case CaracterInfo.CHAR_TYPE.DRAGON:
+            case CustomCharacterInfo.CHAR_TYPE.DRAGON:
                 assetDirectory += "/Dragon";
                 break;
             default:

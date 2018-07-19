@@ -1,7 +1,22 @@
-﻿namespace DefinitionChar
+﻿using System.Collections.Generic;
+using UnityEngine;
+
+namespace DefinitionChar
 {
-    public static class CaracterInfo
+
+    public static class CustomCharacterInfo
     {
+        public static Dictionary<CHAR_TYPE, Vector2> CHAR_COLLIDER_AREA;
+
+        static CustomCharacterInfo()
+        {
+            CHAR_COLLIDER_AREA = new Dictionary<CHAR_TYPE, Vector2>();
+            CHAR_COLLIDER_AREA.Add(CHAR_TYPE.ALLIGATOR, new Vector2(0.45f, 0.58f));
+            CHAR_COLLIDER_AREA.Add(CHAR_TYPE.MAGITION, new Vector2(0.45f, 0.70f));
+            CHAR_COLLIDER_AREA.Add(CHAR_TYPE.DRAGON, new Vector2(0.45f, 0.70f));
+            CHAR_COLLIDER_AREA.Add(CHAR_TYPE.HERO, new Vector2(0.45f, 0.70f));
+        }
+
         public enum CHAR_TYPE
         {
             ALLIGATOR, //악어야
@@ -9,7 +24,6 @@
             DRAGON, // 드래곤
             HERO //용사
         }
-
 
         //캐릭터는 7 Status 를 가지고 있음.
         //1. 사망 1순위
