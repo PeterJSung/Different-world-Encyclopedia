@@ -16,7 +16,9 @@ namespace DefinitionChar
 
         public float m_fAttackSpeed;
 
-        public bool isEnableWeaponHit;
+        public bool m_bIsEnableWeaponHit;
+
+        public string m_sWaeponSpritePath;
     }
 
     public struct PlayerMoveData
@@ -30,7 +32,7 @@ namespace DefinitionChar
         public int m_iJumpCount;
         public bool m_bIsBlink;
 
-        public bool isEnableRavitate;
+        public bool m_bIsEnableRavitate;
     }
 
     public class CharaterInfo
@@ -101,12 +103,13 @@ namespace DefinitionChar
                     ret.m_sPlaerWeapon.m_v2WeaponPosition = new Vector2(-0.015f, 0.18f);
                     ret.m_sPlaerWeapon.m_v2WeaponAxisPosition = new Vector2(-0.015f, -0.015f);
                     ret.m_sPlaerWeapon.m_fAttackSpeed = 0.40f;
-                    ret.m_sPlaerWeapon.isEnableWeaponHit = true;
+                    ret.m_sPlaerWeapon.m_bIsEnableWeaponHit = true;
+                    ret.m_sPlaerWeapon.m_sWaeponSpritePath = "Weapon/Alligator/Merona";
 
                     ret.m_sPlayerMove.m_v2CharacterColliderArea = new Vector2(0.45f, 0.58f);
                     ret.m_sPlayerMove.m_iJumpCount = 2;
                     ret.m_sPlayerMove.m_bIsBlink = false;
-                    ret.m_sPlayerMove.isEnableRavitate = false;
+                    ret.m_sPlayerMove.m_bIsEnableRavitate = false;
                     break;
                 case CHAR_TYPE.MAGITION:
                     ret.m_sPlaerWeapon.m_fWeaponAxisStart = 0.0f;
@@ -116,12 +119,13 @@ namespace DefinitionChar
                     ret.m_sPlaerWeapon.m_v2WeaponPosition = new Vector2(0.03f, 0.0f);
                     ret.m_sPlaerWeapon.m_v2WeaponAxisPosition = new Vector2(-0.015f, -0.07f);
                     ret.m_sPlaerWeapon.m_fAttackSpeed = 1.2f;
-                    ret.m_sPlaerWeapon.isEnableWeaponHit = false;
+                    ret.m_sPlaerWeapon.m_bIsEnableWeaponHit = false;
+                    ret.m_sPlaerWeapon.m_sWaeponSpritePath = "Weapon/Magition/Stick";
 
                     ret.m_sPlayerMove.m_v2CharacterColliderArea = new Vector2(0.45f, 0.70f);
                     ret.m_sPlayerMove.m_iJumpCount = 1;
                     ret.m_sPlayerMove.m_bIsBlink = false;
-                    ret.m_sPlayerMove.isEnableRavitate = true;
+                    ret.m_sPlayerMove.m_bIsEnableRavitate = true;
                     break;
                 case CHAR_TYPE.DRAGON:
                     ret.m_sPlaerWeapon.m_fWeaponAxisStart = 10.0f;
@@ -131,12 +135,13 @@ namespace DefinitionChar
                     ret.m_sPlaerWeapon.m_v2WeaponPosition = new Vector2(0.02f, 0.15f);
                     ret.m_sPlaerWeapon.m_v2WeaponAxisPosition = new Vector2(-0.03f, -0.07f);
                     ret.m_sPlaerWeapon.m_fAttackSpeed = 0.6f;
-                    ret.m_sPlaerWeapon.isEnableWeaponHit = true;
+                    ret.m_sPlaerWeapon.m_bIsEnableWeaponHit = true;
+                    ret.m_sPlaerWeapon.m_sWaeponSpritePath = "Weapon/Dragon/Axe";
 
                     ret.m_sPlayerMove.m_v2CharacterColliderArea = new Vector2(0.45f, 0.70f);
                     ret.m_sPlayerMove.m_iJumpCount = 1;
                     ret.m_sPlayerMove.m_bIsBlink = true;
-                    ret.m_sPlayerMove.isEnableRavitate = false;
+                    ret.m_sPlayerMove.m_bIsEnableRavitate = false;
                     break;
                 case CHAR_TYPE.HERO:
                     ret.m_sPlaerWeapon.m_fWeaponAxisStart = 20.0f;
@@ -146,12 +151,13 @@ namespace DefinitionChar
                     ret.m_sPlaerWeapon.m_v2WeaponPosition = new Vector2(0.0f, 0.25f);
                     ret.m_sPlaerWeapon.m_v2WeaponAxisPosition = new Vector2(-0.015f, -0.11f);
                     ret.m_sPlaerWeapon.m_fAttackSpeed = 0.6f;
-                    ret.m_sPlaerWeapon.isEnableWeaponHit = true;
+                    ret.m_sPlaerWeapon.m_bIsEnableWeaponHit = true;
+                    ret.m_sPlaerWeapon.m_sWaeponSpritePath = "Weapon/Hero/sword";
 
                     ret.m_sPlayerMove.m_v2CharacterColliderArea = new Vector2(0.45f, 0.75f);
                     ret.m_sPlayerMove.m_iJumpCount = 1;
                     ret.m_sPlayerMove.m_bIsBlink = false;
-                    ret.m_sPlayerMove.isEnableRavitate = false;
+                    ret.m_sPlayerMove.m_bIsEnableRavitate = false;
                     break;
             }
             ret.m_sPlayerMove.m_fDashMoveWeight = 0.08f;

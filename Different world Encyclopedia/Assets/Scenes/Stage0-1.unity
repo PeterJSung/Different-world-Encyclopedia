@@ -6096,7 +6096,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8035927aba24d87449ea29e90049ef91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponEffect: {fileID: 530242663}
 --- !u!61 &2002655315
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -6133,6 +6132,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9ade5162dc88874683aef02972770e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  weaponEffect: {fileID: 530242663}
 --- !u!1 &2122600331
 GameObject:
   m_ObjectHideFlags: 0

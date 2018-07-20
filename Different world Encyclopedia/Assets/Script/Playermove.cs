@@ -216,7 +216,7 @@ public class Playermove : MonoBehaviour
         JUMP_FORCE = m_stPlayerMove.m_fJumpForce;
         jumpcount = m_stPlayerMove.m_iJumpCount;
         isBlink = m_stPlayerMove.m_bIsBlink;
-        isRavitate = m_stPlayerMove.isEnableRavitate;
+        isRavitate = m_stPlayerMove.m_bIsEnableRavitate;
     }
 
     void WeaponDataInitialize()
