@@ -5,7 +5,7 @@ public class Playermove : MonoBehaviour
 {
     private CharaterInfo currentCharInfo;
     private PlayerMoveData m_stPlayerMove;
-    private CustomCharacterInfo.CHAR_TYPE selectedCharactorType;
+    private CustomCharacterInfo.CHAR_TYPE selectedCharacterType;
     public GameObject weaponObject;
 
     //GlobalObject
@@ -201,7 +201,7 @@ public class Playermove : MonoBehaviour
 
     void ReLoadingCharacter()
     {
-        CustomCharacterInfo.CHAR_GLOBAL_DEFAULT_DATA.TryGetValue(selectedCharactorType, out currentCharInfo);
+        CustomCharacterInfo.CHAR_GLOBAL_DEFAULT_DATA.TryGetValue(selectedCharacterType, out currentCharInfo);
         m_stPlayerMove = currentCharInfo.m_sPlayerMove;
         CharaterBaseDataInitialize();
         GraphicDataInitialize();
@@ -223,14 +223,14 @@ public class Playermove : MonoBehaviour
     {
         if (weaponObject)
         {
-            weaponController.setParameter(currentCharInfo.m_sPlaerWeapon, selectedCharactorType);
+            weaponController.setParameter(currentCharInfo.m_sPlaerWeapon, selectedCharacterType);
         }
     }
 
     void GraphicDataInitialize()
     {
         string path = "Anim";
-        switch (selectedCharactorType)
+        switch (selectedCharacterType)
         {
             case CustomCharacterInfo.CHAR_TYPE.ALLIGATOR:
                 path += "/dkrdjdiH_0";
@@ -301,7 +301,7 @@ public class Playermove : MonoBehaviour
 
     public void setCharacterType(CustomCharacterInfo.CHAR_TYPE argType)
     {
-        selectedCharactorType = argType;
+        selectedCharacterType = argType;
         ReLoadingCharacter();
     }
 }

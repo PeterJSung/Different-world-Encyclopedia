@@ -75,10 +75,28 @@ public class Weapon : MonoBehaviour
             isHiitedList));
                 break;
             case CustomCharacterInfo.CHAR_TYPE.MAGITION:
+                yield return StartCoroutine(attackController.MagitionAttack(
+            currentData.m_fAttackSpeed,
+            currentData.m_fWeaponAxisStart,
+            currentData.m_fWeaponAxisEnd,
+            isRight,
+            isHiitedList));
                 break;
             case CustomCharacterInfo.CHAR_TYPE.DRAGON:
+                yield return StartCoroutine(attackController.DragonAttack(
+            currentData.m_fAttackSpeed,
+            currentData.m_fWeaponAxisStart,
+            currentData.m_fWeaponAxisEnd,
+            isRight,
+            isHiitedList));
                 break;
             case CustomCharacterInfo.CHAR_TYPE.HERO:
+                yield return StartCoroutine(attackController.HeroAttack(
+            currentData.m_fAttackSpeed,
+            currentData.m_fWeaponAxisStart,
+            currentData.m_fWeaponAxisEnd,
+            isRight,
+            isHiitedList));
                 break;
         }
 
@@ -96,7 +114,10 @@ public class Weapon : MonoBehaviour
         currentData = argData;
         currentPlayerType = argType;
 
-        attackController.SetAttackInfo(new Vector3(0, 0, -currentData.m_fWeaponAxisStart), new Vector3(currentData.m_v2WeaponAxisPosition.x, currentData.m_v2WeaponAxisPosition.y, 0));
+        attackController.SetAttackAxisInfo(new Vector3(0, 0, -currentData.m_fWeaponAxisStart), new Vector3(currentData.m_v2WeaponAxisPosition.x, currentData.m_v2WeaponAxisPosition.y, 0));
+        attackController.SetEffectInfo(currentData.m_v3EffectPosition, currentData.m_v3EffectScale);
+        attackController.SetEffectImage(currentData.m_sWaeponEffectPath);
+
         weaponBoxCollider2D.enabled = currentData.m_bIsEnableWeaponHit;
         weaponBoxCollider2D.size = currentData.m_v2WeaponColliderArea;
         weaponBoxCollider2D.offset = currentData.m_v2Weaponoffset;

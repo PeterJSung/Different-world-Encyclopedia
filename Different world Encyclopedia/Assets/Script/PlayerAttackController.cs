@@ -13,7 +13,7 @@ public class PlayerAttackController : MonoBehaviour {
 
     public GameObject weaponEffect;
 
-    private Renderer renderEffect;
+    private SpriteRenderer renderEffect;
     private Color effectTransparent = new Color(1, 1, 1, 0);
     private Transform parentsObject = null;
 
@@ -21,7 +21,7 @@ public class PlayerAttackController : MonoBehaviour {
     {
         if (weaponEffect)
         {
-            renderEffect = weaponEffect.GetComponent<Renderer>();
+            renderEffect = weaponEffect.GetComponent<SpriteRenderer>();
             effectTransparent.a = 0.0f;
             renderEffect.material.color = effectTransparent;
         }
@@ -44,15 +44,24 @@ public class PlayerAttackController : MonoBehaviour {
 		
 	}
 
-    public void SetAttackInfo(Vector3 argLocalEulerAngles, Vector3 argLocalPosition)
+    public void SetAttackAxisInfo(Vector3 argLocalEulerAngles, Vector3 argLocalPosition)
     {
         parentsObject.transform.localEulerAngles = argLocalEulerAngles;
         parentsObject.transform.localPosition = argLocalPosition;
     }
 
-    //Color.a = 1 불투명
-    //Color.a = 0 투명
-    public IEnumerator AlligatoerAttack(float attackDuration, float startRot,float endRot,bool isRight, ArrayList hitList)
+    public void SetEffectInfo(Vector3 argLocalPosition, Vector3 argLocalScale)
+    {
+        weaponEffect.transform.localPosition = argLocalPosition;
+        weaponEffect.transform.localScale = argLocalScale;
+    }
+
+    public void SetEffectImage(string path)
+    {
+        renderEffect.sprite = Resources.Load<Sprite>(path);
+    }
+
+    private IEnumerator SwingWeapon(float attackDuration, float startRot, float endRot, bool isRight, ArrayList hitList)
     {
         hitList.Clear();
         float sRotValue = startRot;
@@ -97,6 +106,14 @@ public class PlayerAttackController : MonoBehaviour {
         effectTransparent.a = 0.0f;
         renderEffect.material.color = effectTransparent;
 
+    }
+
+    //Color.a = 1 불투명
+    //Color.a = 0 투명
+    public IEnumerator AlligatoerAttack(float attackDuration, float startRot,float endRot,bool isRight, ArrayList hitList)
+    {
+        yield return StartCoroutine(SwingWeapon(attackDuration, startRot, endRot, isRight, hitList));
+        
         if (hitList.Count > 0)
         {
             //0 이상이면 무기에 맞는놈이있다.
@@ -134,6 +151,35 @@ public class PlayerAttackController : MonoBehaviour {
             argData.tLayer.Add(GlobalLayerMask.ENEMY_MASK);
             bController.setInitialize(argData);
             
+        }
+    }
+
+    public IEnumerator MagitionAttack(float attackDuration, float startRot, float endRot, bool isRight, ArrayList hitList)
+    {
+        yield return StartCoroutine(SwingWeapon(attackDuration, startRot, endRot, isRight, hitList));
+    }
+
+    public IEnumerator DragonAttack(float attackDuration, float startRot, float endRot, bool isRight, ArrayList hitList)
+    {
+        yield return StartCoroutine(SwingWeapon(attackDuration, startRot, endRot, isRight, hitList));
+
+        if (hitList.Count > 0)
+        {
+            //0 이상이면 무기에 맞는놈이있다.
+            //Hit and 넉벡
+            Debug.Log("HIT");
+        }
+    }
+
+    public IEnumerator HeroAttack(float attackDuration, float startRot, float endRot, bool isRight, ArrayList hitList)
+    {
+        yield return StartCoroutine(SwingWeapon(attackDuration, startRot, endRot, isRight, hitList));
+
+        if (hitList.Count > 0)
+        {
+            //0 이상이면 무기에 맞는놈이있다.
+            //Hit and 넉벡
+            Debug.Log("HIT");
         }
     }
 }

@@ -5,7 +5,7 @@ using System;
 
 public class CharacterController : MonoBehaviour {
 
-    public GameObject charObj;
+    public GameObject characterObject;
     private CustomCharacterInfo.CHAR_TYPE currentType;
     private Playermove moveScript;
     private CustomCircularQueue<CustomCharacterInfo.CHAR_TYPE> characterQueue;
@@ -16,7 +16,7 @@ public class CharacterController : MonoBehaviour {
     {
         characterQueue = new CustomCircularQueue<CustomCharacterInfo.CHAR_TYPE>();
         currentType = CustomCharacterInfo.CHAR_TYPE.ALLIGATOR;
-        moveScript = charObj.GetComponent<Playermove>();
+        moveScript = characterObject.GetComponent<Playermove>();
         
 
         foreach (CustomCharacterInfo.CHAR_TYPE charType in (CustomCharacterInfo.CHAR_TYPE[])Enum.GetValues(typeof(CustomCharacterInfo.CHAR_TYPE)))
