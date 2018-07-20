@@ -3,7 +3,8 @@ using DefinitionChar;
 
 public class Playermove : MonoBehaviour
 {
-
+    private CharaterInfo currentCharInfo;
+    private PlayerMoveData m_stPlayerMove;
     private CustomCharacterInfo.CHAR_TYPE selectedCharactorType;
     public GameObject weaponObject;
 
@@ -16,12 +17,10 @@ public class Playermove : MonoBehaviour
     private float JUMP_FORCE;
 
     private int jumpcount = 1;
-    private int blinkcount = 1;
+    private bool isBlink = false;
     private bool isGrounded = false;
     private CustomCharacterInfo.CHAR_STATUS nowStatus = CustomCharacterInfo.CHAR_STATUS.NULL;
-
-    private float attackSpeed = 1.0f;
-
+    
     MoveFlag moveValue;
     Animator animator;
 
@@ -51,11 +50,11 @@ public class Playermove : MonoBehaviour
 
     void Update()
     {
-        this.CheckAttack();
-        this.CheckJump();
-        this.CheckMove();
+        CheckAttack();
+        CheckJump();
+        CheckMove();
 
-        this.DoingAction();
+        DoingAction();
     }
 
 
@@ -196,6 +195,8 @@ public class Playermove : MonoBehaviour
 
     void ReLoadingCharacter()
     {
+        CustomCharacterInfo.CHAR_GLOBAL_DEFAULT_DATA.TryGetValue(selectedCharactorType, out currentCharInfo);
+        m_stPlayerMove = currentCharInfo.m_sPlayerMove;
         CharaterBaseDataInitialize();
         GraphicDataInitialize();
         WeaponDataInitialize();
@@ -206,46 +207,25 @@ public class Playermove : MonoBehaviour
         //Object Initialize
         jumpcount = 0;
 
-        //CharatorData Initialize
-        switch (selectedCharactorType)
-        {
-            case CustomCharacterInfo.CHAR_TYPE.ALLIGATOR:
-                DASH_MOVE_WEIGHT = 0.08f;
-                MOVE_WEIGHT = 0.04f;
-                JUMP_FORCE = 400.0f;
-                jumpcount = 2;
-                blinkcount = 0;
-                attackSpeed = 0.25f;
-                break;
-            case CustomCharacterInfo.CHAR_TYPE.MAGITION:
-                break;
-            case CustomCharacterInfo.CHAR_TYPE.DRAGON:
-                break;
-            case CustomCharacterInfo.CHAR_TYPE.HERO:
-                break;
-            default:
-                //설정되지 않은 캐릭터면 ASSERT
-                Debug.Assert(true);
-                Debug.Assert(false);
-                break;
-        }
 
-        
+        DASH_MOVE_WEIGHT = m_stPlayerMove.m_fDashMoveWeight;
+        MOVE_WEIGHT = m_stPlayerMove.m_fMoveWeight;
+        JUMP_FORCE = m_stPlayerMove.m_fJumpForce;
+        jumpcount = m_stPlayerMove.m_iJumpCount;
+        isBlink = m_stPlayerMove.m_bIsBlink;
     }
 
     void WeaponDataInitialize()
     {
         if (weaponObject)
         {
-            weaponController.setParameter(attackSpeed, selectedCharactorType);
+            weaponController.setParameter(currentCharInfo.m_sPlaerWeapon, selectedCharactorType);
         }
     }
 
     void GraphicDataInitialize()
     {
         string path = "Anim";
-        Vector2 resizePoint;
-        CustomCharacterInfo.CHAR_COLLIDER_AREA.TryGetValue(selectedCharactorType, out resizePoint);
         switch (selectedCharactorType)
         {
             case CustomCharacterInfo.CHAR_TYPE.ALLIGATOR:
@@ -259,16 +239,11 @@ public class Playermove : MonoBehaviour
                 break;
             case CustomCharacterInfo.CHAR_TYPE.HERO:
                 break;
-            default:
-                //설정되지 않은 캐릭터면 ASSERT
-                Debug.Assert(true);
-                Debug.Assert(false);
-                break;
         }
 
 
         animator.runtimeAnimatorController = Resources.Load(path) as RuntimeAnimatorController;
-        capsuleCollider2D.size = resizePoint;
+        capsuleCollider2D.size = m_stPlayerMove.m_v2CharacterColliderArea;
     }
 
     void DEBUG_KEY_FUNCTION()

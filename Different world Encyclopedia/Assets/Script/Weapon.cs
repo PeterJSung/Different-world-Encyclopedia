@@ -13,19 +13,20 @@ public class Weapon : MonoBehaviour
 
     private bool canAttack = true;
     private Transform parentsObject = null;
-
-    private const float START_ROTATE = 30.0f;
-    private const float END_ROTATE = 130.0f;
-
+    
     private bool isRight = true;
-    private float attackSpeed = 1.0f;
-
+    
     private CustomCharacterInfo.CHAR_TYPE currentPlayerType;
 
-    Sprite[] sheetingObject = null;
-    Sprite[] endObject = null;
-
+    
     ArrayList isHiitedList = new ArrayList();
+
+    private PlayerWeaponData currentData;
+    private PlayerAttackController attackController;
+
+    private BoxCollider2D weaponBoxCollider2D = null;
+    private SpriteRenderer renderObject = null;
+
     private void OnTriggerStay2D(Collider2D other)
     {
         Debug.Log("TRIGGERD");
@@ -61,19 +62,19 @@ public class Weapon : MonoBehaviour
         //밖에서 걸러지긴하지만 그냥 방어코드겸 넣어봄.
         if (canAttack)
         {
-            StartCoroutine(AttackAnimation(attackSpeed));
+            StartCoroutine(AttackAnimation());
         }
     }
 
 
     //Color.a = 1 불투명
     //Color.a = 0 투명
-    IEnumerator AttackAnimation(float totalduration)
+    IEnumerator AttackAnimation()
     {
         isHiitedList.Clear();
         canAttack = false;
-        float sRotValue = START_ROTATE;
-        float eRotValue = END_ROTATE;
+        float sRotValue = currentData.m_fWeaponAxisStart;
+        float eRotValue = currentData.m_fWeaponAxisEnd;
 
         float halfValue = (eRotValue + sRotValue) / 2;
 
@@ -81,13 +82,13 @@ public class Weapon : MonoBehaviour
         float eTransValue = 1.0f;
         float time = 0f;
 
-        float currentStep = Mathf.Lerp(START_ROTATE, END_ROTATE, time);
+        float currentStep = Mathf.Lerp(currentData.m_fWeaponAxisStart, currentData.m_fWeaponAxisEnd, time);
 
         Vector3 tempVector = new Vector3(0, 0, 0);
 
-        while (currentStep < END_ROTATE)
+        while (currentStep < currentData.m_fWeaponAxisEnd)
         {
-            time += Time.deltaTime / totalduration;
+            time += Time.deltaTime / currentData.m_fAttackSpeed;
 
             currentStep = Mathf.Lerp(sRotValue, eRotValue, time);
             tempVector.z = -currentStep;
@@ -121,7 +122,7 @@ public class Weapon : MonoBehaviour
             Debug.Log("HIT");
         } else
         {
-
+            /*
             //Only For Test
             //무기에 맞는놈이 없으므로 파이어볼
             Debug.Log("Fire Ball");
@@ -149,6 +150,7 @@ public class Weapon : MonoBehaviour
             argData.tLayer = new ArrayList();
             argData.tLayer.Add(GlobalLayerMask.ENEMY_MASK);
             bController.setInitialize(argData);
+            */
         }
         canAttack = true;
     }
@@ -158,36 +160,35 @@ public class Weapon : MonoBehaviour
         isRight = argIsRight;
     }
 
-    public void setParameter(float argSpeed, CustomCharacterInfo.CHAR_TYPE argType)
+    public void setParameter(PlayerWeaponData argData, CustomCharacterInfo.CHAR_TYPE argType)
     {
-        string sheetingDiectory = "";
-        string bulletEndDirectory = "";
-
-        attackSpeed = argSpeed;
+        currentData = argData;
         currentPlayerType = argType;
+        parentsObject.transform.localEulerAngles = new Vector3(0, 0, -currentData.m_fWeaponAxisStart);
 
-        string assetDirectory = "Weapon";
+        weaponBoxCollider2D.enabled = currentData.isEnableWeaponHit;
+        weaponBoxCollider2D.size = currentData.m_v2WeaponColliderArea;
+        weaponBoxCollider2D.offset = currentData.m_v2Weaponoffset;
+        gameObject.transform.localPosition = currentData.m_v2WeaponPosition;
+
+        string path = "Weapon";
         switch (currentPlayerType)
         {
             case CustomCharacterInfo.CHAR_TYPE.ALLIGATOR:
-                assetDirectory += "/Alligator";
+                path += "/Alligator/Merona";
                 break;
             case CustomCharacterInfo.CHAR_TYPE.MAGITION:
-                assetDirectory += "/Magition";
+                path += "/Magition/Stick";
                 break;
             case CustomCharacterInfo.CHAR_TYPE.DRAGON:
-                assetDirectory += "/Dragon";
+                path += "/Dragon/Axe";
                 break;
-            default:
-                Debug.Assert(true);
-                Debug.Assert(false);
+            case CustomCharacterInfo.CHAR_TYPE.HERO:
+                path += "/Hero/sword";
                 break;
         }
-        sheetingDiectory = assetDirectory + "/AttackSheeting";
-        bulletEndDirectory = assetDirectory + "/AttackEnd";
+        renderObject.sprite = Resources.Load<Sprite>(path);
 
-        sheetingObject = Resources.LoadAll<Sprite>(sheetingDiectory);
-        endObject = Resources.LoadAll<Sprite>(bulletEndDirectory);
     }
 
     public bool CanAttackMotion()
@@ -204,6 +205,8 @@ public class Weapon : MonoBehaviour
             renderEffect.material.color = effectTransparent;
         }
         parentsObject = this.transform.parent.transform;
-
+        attackController = gameObject.GetComponent<PlayerAttackController>();
+        weaponBoxCollider2D = gameObject.GetComponent<BoxCollider2D>();
+        renderObject = gameObject.GetComponent<SpriteRenderer>();
     }
 }
