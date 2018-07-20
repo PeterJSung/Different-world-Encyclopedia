@@ -165,7 +165,8 @@ public class Weapon : MonoBehaviour
         currentData = argData;
         currentPlayerType = argType;
         parentsObject.transform.localEulerAngles = new Vector3(0, 0, -currentData.m_fWeaponAxisStart);
-
+        parentsObject.transform.localPosition = new Vector3(currentData.m_v2WeaponAxisPosition.x, currentData.m_v2WeaponAxisPosition.y, 0);
+        
         weaponBoxCollider2D.enabled = currentData.isEnableWeaponHit;
         weaponBoxCollider2D.size = currentData.m_v2WeaponColliderArea;
         weaponBoxCollider2D.offset = currentData.m_v2Weaponoffset;

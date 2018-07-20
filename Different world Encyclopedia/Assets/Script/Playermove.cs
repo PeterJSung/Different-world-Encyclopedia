@@ -9,8 +9,8 @@ public class Playermove : MonoBehaviour
     public GameObject weaponObject;
 
     //GlobalObject
-    Rigidbody2D rigid2D;
-    CapsuleCollider2D capsuleCollider2D;
+    private Rigidbody2D rigid2D;
+    private CapsuleCollider2D capsuleCollider2D;
     //Charator Option
     private float MOVE_WEIGHT;
     private float DASH_MOVE_WEIGHT;
@@ -18,11 +18,12 @@ public class Playermove : MonoBehaviour
 
     private int jumpcount = 1;
     private bool isBlink = false;
+    private bool isRavitate = false;
     private bool isGrounded = false;
     private CustomCharacterInfo.CHAR_STATUS nowStatus = CustomCharacterInfo.CHAR_STATUS.NULL;
-    
-    MoveFlag moveValue;
-    Animator animator;
+
+    private MoveFlag moveValue;
+    private Animator animator;
 
     //Charactor Handler
     private Weapon weaponController = null;
@@ -34,7 +35,6 @@ public class Playermove : MonoBehaviour
         moveValue = new MoveFlag();
         this.rigid2D = GetComponent<Rigidbody2D>();
         weaponController = weaponObject.GetComponent<Weapon>();
-
     }
 
     void Start()
@@ -178,7 +178,7 @@ public class Playermove : MonoBehaviour
                     nowTile == TileType.FLOAT_GROUND)
                 {
                     isGrounded = true;
-                    jumpcount = 2;
+                    jumpcount = m_stPlayerMove.m_iJumpCount;
                 }
                 break;
             case "Monster":
@@ -186,6 +186,12 @@ public class Playermove : MonoBehaviour
             case "Trap":
                 break;
         }
+    }
+
+    public bool IsPossibleCharaterChange()
+    {
+        //땅에있으면서 공격 가능할때 캐릭변경가능 공격도중 캐릭변경 ㄴㄴ해
+        return isGrounded && weaponController.CanAttackMotion();
     }
 
     bool IsStatus(CustomCharacterInfo.CHAR_STATUS argStat)
@@ -205,14 +211,12 @@ public class Playermove : MonoBehaviour
     void CharaterBaseDataInitialize()
     {
         //Object Initialize
-        jumpcount = 0;
-
-
         DASH_MOVE_WEIGHT = m_stPlayerMove.m_fDashMoveWeight;
         MOVE_WEIGHT = m_stPlayerMove.m_fMoveWeight;
         JUMP_FORCE = m_stPlayerMove.m_fJumpForce;
         jumpcount = m_stPlayerMove.m_iJumpCount;
         isBlink = m_stPlayerMove.m_bIsBlink;
+        isRavitate = m_stPlayerMove.isEnableRavitate;
     }
 
     void WeaponDataInitialize()
@@ -238,10 +242,10 @@ public class Playermove : MonoBehaviour
                 path += "/DragonH_0";
                 break;
             case CustomCharacterInfo.CHAR_TYPE.HERO:
+                path += "/HeroH_0";
                 break;
         }
-
-
+        
         animator.runtimeAnimatorController = Resources.Load(path) as RuntimeAnimatorController;
         capsuleCollider2D.size = m_stPlayerMove.m_v2CharacterColliderArea;
     }

@@ -12,6 +12,7 @@ namespace DefinitionChar
         public Vector2 m_v2Weaponoffset;
 
         public Vector2 m_v2WeaponPosition;
+        public Vector2 m_v2WeaponAxisPosition;
 
         public float m_fAttackSpeed;
 
@@ -29,6 +30,7 @@ namespace DefinitionChar
         public int m_iJumpCount;
         public bool m_bIsBlink;
 
+        public bool isEnableRavitate;
     }
 
     public class CharaterInfo
@@ -94,44 +96,62 @@ namespace DefinitionChar
                 case CHAR_TYPE.ALLIGATOR:
                     ret.m_sPlaerWeapon.m_fWeaponAxisStart = 30.0f;
                     ret.m_sPlaerWeapon.m_fWeaponAxisEnd = 130.0f;
-                    ret.m_sPlaerWeapon.m_v2WeaponColliderArea = new Vector2(0.1f, 0.4f);
+                    ret.m_sPlaerWeapon.m_v2WeaponColliderArea = new Vector2(0.12f, 0.4f);
                     ret.m_sPlaerWeapon.m_v2Weaponoffset = new Vector2(0.0f, 0.0f);
-                    ret.m_sPlaerWeapon.m_v2WeaponPosition = new Vector2(0.0f, 0.2f);
+                    ret.m_sPlaerWeapon.m_v2WeaponPosition = new Vector2(-0.015f, 0.18f);
+                    ret.m_sPlaerWeapon.m_v2WeaponAxisPosition = new Vector2(-0.015f, -0.015f);
                     ret.m_sPlaerWeapon.m_fAttackSpeed = 0.40f;
                     ret.m_sPlaerWeapon.isEnableWeaponHit = true;
 
                     ret.m_sPlayerMove.m_v2CharacterColliderArea = new Vector2(0.45f, 0.58f);
                     ret.m_sPlayerMove.m_iJumpCount = 2;
                     ret.m_sPlayerMove.m_bIsBlink = false;
+                    ret.m_sPlayerMove.isEnableRavitate = false;
                     break;
                 case CHAR_TYPE.MAGITION:
                     ret.m_sPlaerWeapon.m_fWeaponAxisStart = 0.0f;
                     ret.m_sPlaerWeapon.m_fWeaponAxisEnd = 45.0f;
                     ret.m_sPlaerWeapon.m_v2WeaponColliderArea = new Vector2(0.0f, 0.0f);
                     ret.m_sPlaerWeapon.m_v2Weaponoffset = new Vector2(0.0f, 0.0f);
-                    ret.m_sPlaerWeapon.m_v2WeaponPosition = new Vector2(0.0f, 0.0f);
+                    ret.m_sPlaerWeapon.m_v2WeaponPosition = new Vector2(0.03f, 0.0f);
+                    ret.m_sPlaerWeapon.m_v2WeaponAxisPosition = new Vector2(-0.015f, -0.07f);
                     ret.m_sPlaerWeapon.m_fAttackSpeed = 1.2f;
                     ret.m_sPlaerWeapon.isEnableWeaponHit = false;
 
                     ret.m_sPlayerMove.m_v2CharacterColliderArea = new Vector2(0.45f, 0.70f);
                     ret.m_sPlayerMove.m_iJumpCount = 1;
                     ret.m_sPlayerMove.m_bIsBlink = false;
+                    ret.m_sPlayerMove.isEnableRavitate = true;
                     break;
                 case CHAR_TYPE.DRAGON:
-                    ret.m_sPlaerWeapon.m_fWeaponAxisStart = 0.0f;
+                    ret.m_sPlaerWeapon.m_fWeaponAxisStart = 10.0f;
                     ret.m_sPlaerWeapon.m_fWeaponAxisEnd = 130.0f;
-                    ret.m_sPlaerWeapon.m_v2WeaponColliderArea = new Vector2(0.1f, 0.4f);
-                    ret.m_sPlaerWeapon.m_v2Weaponoffset = new Vector2(0.0f, 0.0f);
-                    ret.m_sPlaerWeapon.m_v2WeaponPosition = new Vector2(0.0f, 0.2f);
+                    ret.m_sPlaerWeapon.m_v2WeaponColliderArea = new Vector2(0.35f, 0.55f);
+                    ret.m_sPlaerWeapon.m_v2Weaponoffset = new Vector2(0.0f, 0.05f);
+                    ret.m_sPlaerWeapon.m_v2WeaponPosition = new Vector2(0.02f, 0.15f);
+                    ret.m_sPlaerWeapon.m_v2WeaponAxisPosition = new Vector2(-0.03f, -0.07f);
                     ret.m_sPlaerWeapon.m_fAttackSpeed = 0.6f;
                     ret.m_sPlaerWeapon.isEnableWeaponHit = true;
 
                     ret.m_sPlayerMove.m_v2CharacterColliderArea = new Vector2(0.45f, 0.70f);
                     ret.m_sPlayerMove.m_iJumpCount = 1;
                     ret.m_sPlayerMove.m_bIsBlink = true;
+                    ret.m_sPlayerMove.isEnableRavitate = false;
                     break;
                 case CHAR_TYPE.HERO:
-                    ret.m_sPlayerMove.m_v2CharacterColliderArea = new Vector2(0.45f, 0.70f);
+                    ret.m_sPlaerWeapon.m_fWeaponAxisStart = 20.0f;
+                    ret.m_sPlaerWeapon.m_fWeaponAxisEnd = 130.0f;
+                    ret.m_sPlaerWeapon.m_v2WeaponColliderArea = new Vector2(0.1f, 0.45f);
+                    ret.m_sPlaerWeapon.m_v2Weaponoffset = new Vector2(0.0f, 0.05f);
+                    ret.m_sPlaerWeapon.m_v2WeaponPosition = new Vector2(0.0f, 0.25f);
+                    ret.m_sPlaerWeapon.m_v2WeaponAxisPosition = new Vector2(-0.015f, -0.11f);
+                    ret.m_sPlaerWeapon.m_fAttackSpeed = 0.6f;
+                    ret.m_sPlaerWeapon.isEnableWeaponHit = true;
+
+                    ret.m_sPlayerMove.m_v2CharacterColliderArea = new Vector2(0.45f, 0.75f);
+                    ret.m_sPlayerMove.m_iJumpCount = 1;
+                    ret.m_sPlayerMove.m_bIsBlink = false;
+                    ret.m_sPlayerMove.isEnableRavitate = false;
                     break;
             }
             ret.m_sPlayerMove.m_fDashMoveWeight = 0.08f;
