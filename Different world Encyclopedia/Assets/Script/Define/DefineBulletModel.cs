@@ -38,16 +38,18 @@ namespace DefineBulletModel
             }
         }
 
+        //
         public class BulletData
         {
-            public BULLET_DIRECTION dir;
-            public MOTION_TYPE motion;
-            public Sprite[] sheetingsprite;
-            public Sprite[] endSprite;
-            public PenetrateData penetrate;
-            public ArrayList tLayer;
+            public BULLET_DIRECTION dir = BULLET_DIRECTION.NONE;
+            public MOTION_TYPE motion = MOTION_TYPE.NONE;
+            public Sprite[] sheetingsprite = null;
+            public Sprite[] endSprite = null;
+            public PenetrateData penetrate = null;
+            public ArrayList tLayer = null;
             public float disapearTiming;
             public float sheetingLength;
+            public float sheetingTiming;
             public Vector3 weight;
             //x = xmove 
             //y = ymove 

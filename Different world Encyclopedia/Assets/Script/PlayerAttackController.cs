@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using DefineBulletModel;
 using UnityEngine;
+using DefineDefaultAttack;
 
 public class PlayerAttackController : MonoBehaviour {
 
@@ -16,6 +17,8 @@ public class PlayerAttackController : MonoBehaviour {
     private SpriteRenderer renderEffect;
     private Color effectTransparent = new Color(1, 1, 1, 0);
     private Transform parentsObject = null;
+
+    private GameObject prefbObject;
 
     void Awake()
     {
@@ -32,6 +35,9 @@ public class PlayerAttackController : MonoBehaviour {
         alligatorEndObject = Resources.LoadAll<Sprite>("Weapon/Alligator/AttackEnd");
 
         //마법사 공격 sheeting 불러옴.
+        magitionSheetingObject = Resources.LoadAll<Sprite>("Weapon/Magition/AttackSheeting");
+
+        prefbObject = Resources.Load("Prefabs/BulletDefaultAttack") as GameObject;
     }
 
     // Use this for initialization
@@ -61,6 +67,8 @@ public class PlayerAttackController : MonoBehaviour {
         renderEffect.sprite = Resources.Load<Sprite>(path);
     }
 
+    //Color.a = 1 불투명
+    //Color.a = 0 투명
     private IEnumerator SwingWeapon(float attackDuration, float startRot, float endRot, bool isRight, ArrayList hitList)
     {
         hitList.Clear();
@@ -105,16 +113,13 @@ public class PlayerAttackController : MonoBehaviour {
         parentsObject.localEulerAngles = tempVector;
         effectTransparent.a = 0.0f;
         renderEffect.material.color = effectTransparent;
-
     }
 
-    //Color.a = 1 불투명
-    //Color.a = 0 투명
-    public IEnumerator AlligatoerAttack(float attackDuration, float startRot,float endRot,bool isRight, ArrayList hitList)
+    public IEnumerator AlligatoerAttack(DefaultAttackData _defaultData, ExtraAttackData _extraData)
     {
-        yield return StartCoroutine(SwingWeapon(attackDuration, startRot, endRot, isRight, hitList));
+        yield return StartCoroutine(SwingWeapon(_defaultData.m_fAttackSpeed, _defaultData.m_fWeaponAxisStart, _defaultData.m_fWeaponAxisEnd, _defaultData.isRight, _defaultData.hitList));
         
-        if (hitList.Count > 0)
+        if (_defaultData.hitList.Count > 0)
         {
             //0 이상이면 무기에 맞는놈이있다.
             //Hit and 넉벡
@@ -125,21 +130,20 @@ public class PlayerAttackController : MonoBehaviour {
             
             //Only For Test
             //무기에 맞는놈이 없으므로 파이어볼
-            Debug.Log("Fire Ball");
-            GameObject prefab = Resources.Load("Prefabs/BulletFireBall") as GameObject;
             // Resources/Prefabs/Bullet.prefab 로드
-            GameObject bullet = MonoBehaviour.Instantiate(prefab) as GameObject;
+            GameObject bullet = MonoBehaviour.Instantiate(prefbObject) as GameObject;
+            bullet.GetComponent<CapsuleCollider2D>().size = _extraData.m_v2BulletSize;
             // 실제 인스턴스 생성. GameObject name의 기본값은 Bullet (clone)
             bullet.transform.position = new Vector3(parentsObject.transform.position.x +
-                (isRight == true? +0.2f : -0.2f),
+                (_defaultData.isRight == true? +0.2f : -0.2f),
                 parentsObject.transform.position.y,
                 parentsObject.transform.position.z);
-            bullet.transform.localScale = new Vector3(isRight ? bullet.transform.localScale.x : -bullet.transform.localScale.x,
+            bullet.transform.localScale = new Vector3(_defaultData.isRight ? bullet.transform.localScale.x : -bullet.transform.localScale.x,
                 bullet.transform.localScale.y,
                 bullet.transform.localScale.z);
             BulletController bController = bullet.GetComponent<BulletController>();
             BulletModel.BulletData argData = new BulletModel.BulletData();
-            argData.dir = (isRight ? BulletModel.BULLET_DIRECTION.RIGHT : BulletModel.BULLET_DIRECTION.LEFT);
+            argData.dir = (_defaultData.isRight ? BulletModel.BULLET_DIRECTION.RIGHT : BulletModel.BULLET_DIRECTION.LEFT);
             argData.motion = BulletModel.MOTION_TYPE.STRAIGHT;
             argData.sheetingsprite = alligatorSheetingObject;
             argData.endSprite = alligatorEndObject;
@@ -150,20 +154,45 @@ public class PlayerAttackController : MonoBehaviour {
             argData.tLayer = new ArrayList();
             argData.tLayer.Add(GlobalLayerMask.ENEMY_MASK);
             bController.setInitialize(argData);
-            
         }
     }
 
-    public IEnumerator MagitionAttack(float attackDuration, float startRot, float endRot, bool isRight, ArrayList hitList)
+    public IEnumerator MagitionAttack(DefaultAttackData _defaultData, ExtraAttackData _extraData)
     {
-        yield return StartCoroutine(SwingWeapon(attackDuration, startRot, endRot, isRight, hitList));
+        StartCoroutine(SwingWeapon(_defaultData.m_fAttackSpeed, _defaultData.m_fWeaponAxisStart, _defaultData.m_fWeaponAxisEnd, _defaultData.isRight, _defaultData.hitList));
+
+        yield return new WaitForSeconds(_defaultData.m_fAttackSpeed / 2);
+
+        GameObject bullet = MonoBehaviour.Instantiate(prefbObject) as GameObject;
+        bullet.GetComponent<CapsuleCollider2D>().size = _extraData.m_v2BulletSize;
+        // 실제 인스턴스 생성. GameObject name의 기본값은 Bullet (clone)
+        bullet.transform.position = new Vector3(parentsObject.transform.position.x +
+            (_defaultData.isRight == true ? +0.2f : -0.2f),
+            parentsObject.transform.position.y,
+            parentsObject.transform.position.z);
+        bullet.transform.localScale = new Vector3(_defaultData.isRight ? bullet.transform.localScale.x : -bullet.transform.localScale.x,
+            bullet.transform.localScale.y,
+            bullet.transform.localScale.z);
+        BulletController bController = bullet.GetComponent<BulletController>();
+        BulletModel.BulletData argData = new BulletModel.BulletData();
+        argData.dir = (_defaultData.isRight ? BulletModel.BULLET_DIRECTION.RIGHT : BulletModel.BULLET_DIRECTION.LEFT);
+        argData.motion = BulletModel.MOTION_TYPE.STRAIGHT;
+        argData.sheetingsprite = alligatorSheetingObject;
+        argData.endSprite = alligatorEndObject;
+        argData.weight = new Vector3(0.04f, 0.04f, 0.04f);
+        argData.penetrate = new BulletModel.PenetrateData(1, 100.0f);
+        argData.disapearTiming = 0.7f;
+        argData.sheetingLength = 5.0f;
+        argData.tLayer = new ArrayList();
+        argData.tLayer.Add(GlobalLayerMask.ENEMY_MASK);
+        bController.setInitialize(argData);
     }
 
-    public IEnumerator DragonAttack(float attackDuration, float startRot, float endRot, bool isRight, ArrayList hitList)
+    public IEnumerator DragonAttack(DefaultAttackData _defaultData, ExtraAttackData _extraData)
     {
-        yield return StartCoroutine(SwingWeapon(attackDuration, startRot, endRot, isRight, hitList));
+        yield return StartCoroutine(SwingWeapon(_defaultData.m_fAttackSpeed, _defaultData.m_fWeaponAxisStart, _defaultData.m_fWeaponAxisEnd, _defaultData.isRight, _defaultData.hitList));
 
-        if (hitList.Count > 0)
+        if (_defaultData.hitList.Count > 0)
         {
             //0 이상이면 무기에 맞는놈이있다.
             //Hit and 넉벡
@@ -171,11 +200,11 @@ public class PlayerAttackController : MonoBehaviour {
         }
     }
 
-    public IEnumerator HeroAttack(float attackDuration, float startRot, float endRot, bool isRight, ArrayList hitList)
+    public IEnumerator HeroAttack(DefaultAttackData _defaultData, ExtraAttackData _extraData)
     {
-        yield return StartCoroutine(SwingWeapon(attackDuration, startRot, endRot, isRight, hitList));
+        yield return StartCoroutine(SwingWeapon(_defaultData.m_fAttackSpeed, _defaultData.m_fWeaponAxisStart, _defaultData.m_fWeaponAxisEnd, _defaultData.isRight, _defaultData.hitList));
 
-        if (hitList.Count > 0)
+        if (_defaultData.hitList.Count > 0)
         {
             //0 이상이면 무기에 맞는놈이있다.
             //Hit and 넉벡

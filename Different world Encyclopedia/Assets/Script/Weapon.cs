@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 using DefinitionChar;
+using DefineDefaultAttack;
 
 public class Weapon : MonoBehaviour
 {
@@ -14,11 +15,13 @@ public class Weapon : MonoBehaviour
 
     ArrayList isHiitedList = new ArrayList();
 
-    private PlayerWeaponData currentData;
+    private PlayerWeaponData currentPlayerData;
     private PlayerAttackController attackController;
 
     private BoxCollider2D weaponBoxCollider2D = null;
     private SpriteRenderer renderObject = null;
+
+    private PlayerDefaultBulletData currentBulletData;
 
     private void OnTriggerStay2D(Collider2D other)
     {
@@ -63,40 +66,34 @@ public class Weapon : MonoBehaviour
     IEnumerator AttackAnimation()
     {
         canAttack = false;
-
+        DefaultAttackData argDefaultData = new DefaultAttackData(
+            currentPlayerData.m_fAttackSpeed,
+            currentPlayerData.m_fWeaponAxisStart,
+            currentPlayerData.m_fWeaponAxisEnd,
+            isRight, 
+            isHiitedList);
+        ExtraAttackData argExtraData = new ExtraAttackData(currentBulletData.m_v2BulletSize);
         switch (currentPlayerType)
         {
             case CustomCharacterInfo.CHAR_TYPE.ALLIGATOR:
                 yield return StartCoroutine(attackController.AlligatoerAttack(
-            currentData.m_fAttackSpeed,
-            currentData.m_fWeaponAxisStart,
-            currentData.m_fWeaponAxisEnd,
-            isRight,
-            isHiitedList));
+                    argDefaultData,
+                    argExtraData));
                 break;
             case CustomCharacterInfo.CHAR_TYPE.MAGITION:
                 yield return StartCoroutine(attackController.MagitionAttack(
-            currentData.m_fAttackSpeed,
-            currentData.m_fWeaponAxisStart,
-            currentData.m_fWeaponAxisEnd,
-            isRight,
-            isHiitedList));
+                    argDefaultData,
+                    argExtraData));
                 break;
             case CustomCharacterInfo.CHAR_TYPE.DRAGON:
                 yield return StartCoroutine(attackController.DragonAttack(
-            currentData.m_fAttackSpeed,
-            currentData.m_fWeaponAxisStart,
-            currentData.m_fWeaponAxisEnd,
-            isRight,
-            isHiitedList));
+                    argDefaultData,
+                    argExtraData));
                 break;
             case CustomCharacterInfo.CHAR_TYPE.HERO:
                 yield return StartCoroutine(attackController.HeroAttack(
-            currentData.m_fAttackSpeed,
-            currentData.m_fWeaponAxisStart,
-            currentData.m_fWeaponAxisEnd,
-            isRight,
-            isHiitedList));
+                    argDefaultData,
+                    argExtraData));
                 break;
         }
 
@@ -109,21 +106,23 @@ public class Weapon : MonoBehaviour
         isRight = argIsRight;
     }
 
-    public void setParameter(PlayerWeaponData argData, CustomCharacterInfo.CHAR_TYPE argType)
+    public void setParameter(PlayerWeaponData argPlayerData,PlayerDefaultBulletData argBulletData ,CustomCharacterInfo.CHAR_TYPE argType)
     {
-        currentData = argData;
+        currentPlayerData = argPlayerData;
+        currentBulletData = argBulletData;
+
         currentPlayerType = argType;
 
-        attackController.SetAttackAxisInfo(new Vector3(0, 0, -currentData.m_fWeaponAxisStart), new Vector3(currentData.m_v2WeaponAxisPosition.x, currentData.m_v2WeaponAxisPosition.y, 0));
-        attackController.SetEffectInfo(currentData.m_v3EffectPosition, currentData.m_v3EffectScale);
-        attackController.SetEffectImage(currentData.m_sWaeponEffectPath);
+        attackController.SetAttackAxisInfo(new Vector3(0, 0, -currentPlayerData.m_fWeaponAxisStart), new Vector3(currentPlayerData.m_v2WeaponAxisPosition.x, currentPlayerData.m_v2WeaponAxisPosition.y, 0));
+        attackController.SetEffectInfo(currentPlayerData.m_v3EffectPosition, currentPlayerData.m_v3EffectScale);
+        attackController.SetEffectImage(currentPlayerData.m_sWaeponEffectPath);
 
-        weaponBoxCollider2D.enabled = currentData.m_bIsEnableWeaponHit;
-        weaponBoxCollider2D.size = currentData.m_v2WeaponColliderArea;
-        weaponBoxCollider2D.offset = currentData.m_v2Weaponoffset;
-        gameObject.transform.localPosition = currentData.m_v2WeaponPosition;
-        
-        renderObject.sprite = Resources.Load<Sprite>(currentData.m_sWaeponSpritePath);
+        weaponBoxCollider2D.enabled = currentPlayerData.m_bIsEnableWeaponHit;
+        weaponBoxCollider2D.size = currentPlayerData.m_v2WeaponColliderArea;
+        weaponBoxCollider2D.offset = currentPlayerData.m_v2Weaponoffset;
+        gameObject.transform.localPosition = currentPlayerData.m_v2WeaponPosition;
+
+        renderObject.sprite = Resources.Load<Sprite>(currentPlayerData.m_sWaeponSpritePath);
     }
 
     public bool CanAttackMotion()

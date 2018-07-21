@@ -223,30 +223,13 @@ public class Playermove : MonoBehaviour
     {
         if (weaponObject)
         {
-            weaponController.setParameter(currentCharInfo.m_sPlaerWeapon, selectedCharacterType);
+            weaponController.setParameter(currentCharInfo.m_sPlaerWeapon, currentCharInfo.m_sPlayerDefaultBullet, selectedCharacterType);
         }
     }
 
     void GraphicDataInitialize()
     {
-        string path = "Anim";
-        switch (selectedCharacterType)
-        {
-            case CustomCharacterInfo.CHAR_TYPE.ALLIGATOR:
-                path += "/dkrdjdiH_0";
-                break;
-            case CustomCharacterInfo.CHAR_TYPE.MAGITION:
-                path += "/wichH_0";
-                break;
-            case CustomCharacterInfo.CHAR_TYPE.DRAGON:
-                path += "/DragonH_0";
-                break;
-            case CustomCharacterInfo.CHAR_TYPE.HERO:
-                path += "/HeroH_0";
-                break;
-        }
-        
-        animator.runtimeAnimatorController = Resources.Load(path) as RuntimeAnimatorController;
+        animator.runtimeAnimatorController = Resources.Load(m_stPlayerMove.m_sPlayerSpritePath) as RuntimeAnimatorController;
         capsuleCollider2D.size = m_stPlayerMove.m_v2CharacterColliderArea;
     }
 

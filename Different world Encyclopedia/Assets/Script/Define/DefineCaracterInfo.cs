@@ -3,6 +3,12 @@ using UnityEngine;
 
 namespace DefinitionChar
 {
+    public class PlayerDefaultBulletData
+    {
+        public Vector2 m_v2BulletSize;
+        //need Extra Data
+    }
+
     public struct PlayerWeaponData
     {
         public float m_fWeaponAxisStart;
@@ -37,6 +43,8 @@ namespace DefinitionChar
         public bool m_bIsBlink;
 
         public bool m_bIsEnableRavitate;
+
+        public string m_sPlayerSpritePath;
     }
 
     public class CharaterInfo
@@ -45,11 +53,14 @@ namespace DefinitionChar
         public PlayerWeaponData m_sPlaerWeapon;
         //for PlayerMove
         public PlayerMoveData m_sPlayerMove;
+        //for default attack bullet
+        public PlayerDefaultBulletData m_sPlayerDefaultBullet;
 
         public CharaterInfo()
         {
             m_sPlaerWeapon = new PlayerWeaponData();
             m_sPlayerMove = new PlayerMoveData();
+            m_sPlayerDefaultBullet = new PlayerDefaultBulletData();
         }
     }
 
@@ -93,7 +104,7 @@ namespace DefinitionChar
             CHAR_GLOBAL_DEFAULT_DATA.Add(CHAR_TYPE.DRAGON, generateDefaultCharInfo(CHAR_TYPE.DRAGON));
             CHAR_GLOBAL_DEFAULT_DATA.Add(CHAR_TYPE.HERO, generateDefaultCharInfo(CHAR_TYPE.HERO));
         }
-        
+
         private static CharaterInfo generateDefaultCharInfo(CHAR_TYPE arg)
         {
             CharaterInfo ret = new CharaterInfo();
@@ -121,6 +132,9 @@ namespace DefinitionChar
                     ret.m_sPlayerMove.m_iJumpCount = 2;
                     ret.m_sPlayerMove.m_bIsBlink = false;
                     ret.m_sPlayerMove.m_bIsEnableRavitate = false;
+                    ret.m_sPlayerMove.m_sPlayerSpritePath = "Anim/Player/dkrdjdiH_0";
+
+                    ret.m_sPlayerDefaultBullet.m_v2BulletSize = new Vector2(0.2f, 0.2f);
                     break;
                 case CHAR_TYPE.MAGITION:
                     ret.m_sPlaerWeapon.m_fWeaponAxisStart = 0.0f;
@@ -144,6 +158,9 @@ namespace DefinitionChar
                     ret.m_sPlayerMove.m_iJumpCount = 1;
                     ret.m_sPlayerMove.m_bIsBlink = false;
                     ret.m_sPlayerMove.m_bIsEnableRavitate = true;
+                    ret.m_sPlayerMove.m_sPlayerSpritePath = "Anim/Player/wichH_0";
+
+                    ret.m_sPlayerDefaultBullet.m_v2BulletSize = new Vector2(0.75f, 0.4f);
                     break;
                 case CHAR_TYPE.DRAGON:
                     ret.m_sPlaerWeapon.m_fWeaponAxisStart = 10.0f;
@@ -167,6 +184,7 @@ namespace DefinitionChar
                     ret.m_sPlayerMove.m_iJumpCount = 1;
                     ret.m_sPlayerMove.m_bIsBlink = true;
                     ret.m_sPlayerMove.m_bIsEnableRavitate = false;
+                    ret.m_sPlayerMove.m_sPlayerSpritePath = "Anim/Player/DragonH_0";
                     break;
                 case CHAR_TYPE.HERO:
                     ret.m_sPlaerWeapon.m_fWeaponAxisStart = 20.0f;
@@ -190,6 +208,7 @@ namespace DefinitionChar
                     ret.m_sPlayerMove.m_iJumpCount = 1;
                     ret.m_sPlayerMove.m_bIsBlink = false;
                     ret.m_sPlayerMove.m_bIsEnableRavitate = false;
+                    ret.m_sPlayerMove.m_sPlayerSpritePath = "Anim/Player/HeroH_0";
                     break;
             }
             ret.m_sPlayerMove.m_fDashMoveWeight = 0.06f;

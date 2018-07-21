@@ -8,7 +8,7 @@ using DefineBulletModel;
 public class BulletController : MonoBehaviour
 {
     BulletModel.BulletData currentBulletData = null;
-    
+
     private bool isEnd = false;
     private bool isStart = false;
 
@@ -19,6 +19,7 @@ public class BulletController : MonoBehaviour
 
     private SpriteRenderer renderObj = null;
 
+    private float time = 0;
 
     //효과가 끝나면서 추가로 다른애들도 맞는지?
     private void OnTriggerEnter2D(Collider2D other)
@@ -64,24 +65,38 @@ public class BulletController : MonoBehaviour
             }
             else
             {
-                calculateNextPosition();
-                this.gameObject.transform.TransformPoint(currentTransForm.position);
-
-
+                //Check Sheeting area;
                 renderObj.sprite = currentBulletData.sheetingsprite[renderingIndex];
                 renderingIndex++;
                 if (renderingIndex == currentBulletData.sheetingsprite.Length)
                 {
                     renderingIndex = 0;
                 }
-
-                //Check Sheeting area;
-
-                float distance = Vector3.Distance(startPosition, currentTransForm.position);
-                if (distance > currentBulletData.sheetingLength)
+                switch (currentBulletData.motion)
                 {
-                    isEnd = true;
+                    case BulletModel.MOTION_TYPE.NONE:
+                        time += Time.deltaTime;
+                        if( time > currentBulletData.disapearTiming)
+                        {
+                            isEnd = true;
+                        }
+                        break;
+                    case BulletModel.MOTION_TYPE.STRAIGHT:
+                        calculateNextPosition();
+                        this.gameObject.transform.TransformPoint(currentTransForm.position);
+
+                        float distance = Vector3.Distance(startPosition, currentTransForm.position);
+                        if (distance > currentBulletData.sheetingLength)
+                        {
+                            isEnd = true;
+                        }
+                        break;
+                    case BulletModel.MOTION_TYPE.CURVE:
+                        //Not defined
+                        break;
                 }
+
+
             }
         }
     }
@@ -94,16 +109,36 @@ public class BulletController : MonoBehaviour
         float time = 0f;
 
         renderingIndex = 0;
-        while (time < currentBulletData.disapearTiming)
+        if (currentBulletData.endSprite == null)
         {
-            time += Time.deltaTime / currentBulletData.disapearTiming;
-            renderObj.sprite = currentBulletData.endSprite[renderingIndex];
-            renderingIndex++;
-            if (renderingIndex == currentBulletData.endSprite.Length)
+            float sTransValue = 1.0f;
+            float eTransValue = 0.0f;
+
+            Color effectTransparent = new Color(1, 1, 1, sTransValue);
+
+            while (time < currentBulletData.disapearTiming)
             {
-                renderingIndex = 0;
+                effectTransparent.a = Mathf.Lerp(sTransValue, eTransValue, time);
+                renderObj.material.color = effectTransparent;
+                yield return null;
             }
-            yield return null;
+        }
+        else
+        {
+            while (time < currentBulletData.disapearTiming)
+            {
+                time += Time.deltaTime / currentBulletData.disapearTiming;
+
+
+                renderObj.sprite = currentBulletData.endSprite[renderingIndex];
+                renderingIndex++;
+                if (renderingIndex == currentBulletData.endSprite.Length)
+                {
+                    renderingIndex = 0;
+                }
+
+                yield return null;
+            }
         }
         Destroy(this.gameObject);
     }
@@ -187,6 +222,7 @@ public class BulletController : MonoBehaviour
             this.gameObject.transform.position.z);
         currentTransForm = this.gameObject.transform;
         //데이터 세팅이 끝난 후 설정
+        time = 0;
         isStart = true;
     }
 }
