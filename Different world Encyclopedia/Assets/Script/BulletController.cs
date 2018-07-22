@@ -7,7 +7,7 @@ using DefineBulletModel;
 
 public class BulletController : MonoBehaviour
 {
-    BulletModel.BulletData currentBulletData = null;
+    BulletData currentBulletData = null;
 
     private bool isEnd = false;
     private bool isStart = false;
@@ -34,9 +34,9 @@ public class BulletController : MonoBehaviour
             {
                 //유효한 타겟인가??
                 Debug.Log("해당 타겟에 데미지 입히자");
-                if (isEnd == false && currentBulletData.penetrate.penetrateCount > 0)
+                if (isEnd == false && currentBulletData.CanPenetrate())
                 {
-                    currentBulletData.penetrate.penetrateCount--;
+                    currentBulletData.DoPenetrate();
                 }
                 else
                 {
@@ -71,28 +71,25 @@ public class BulletController : MonoBehaviour
                 if (renderingIndex == currentBulletData.sheetingsprite.Length)
                 {
                     renderingIndex = 0;
-                }
+                }                
                 switch (currentBulletData.motion)
                 {
-                    case BulletModel.MOTION_TYPE.NONE:
+                    case MOTION_TYPE.FLOAT:
                         time += Time.deltaTime;
-                        if( time > currentBulletData.disapearTiming)
+                        if( time > currentBulletData.GetFloattingTimimg())
                         {
                             isEnd = true;
                         }
                         break;
-                    case BulletModel.MOTION_TYPE.STRAIGHT:
+                    case MOTION_TYPE.STRAIGHT:
                         calculateNextPosition();
                         this.gameObject.transform.TransformPoint(currentTransForm.position);
 
                         float distance = Vector3.Distance(startPosition, currentTransForm.position);
-                        if (distance > currentBulletData.sheetingLength)
+                        if (distance > currentBulletData.GetSheetingLength())
                         {
                             isEnd = true;
                         }
-                        break;
-                    case BulletModel.MOTION_TYPE.CURVE:
-                        //Not defined
                         break;
                 }
 
@@ -109,7 +106,10 @@ public class BulletController : MonoBehaviour
         float time = 0f;
 
         renderingIndex = 0;
-        if (currentBulletData.endSprite == null)
+        Debug.Log("ENCALL");
+        Sprite[] endSprite = currentBulletData.GetEndSprite();
+        Debug.Log(endSprite);
+        if (endSprite == null)
         {
             float sTransValue = 1.0f;
             float eTransValue = 0.0f;
@@ -118,6 +118,8 @@ public class BulletController : MonoBehaviour
 
             while (time < currentBulletData.disapearTiming)
             {
+                time += Time.deltaTime / currentBulletData.disapearTiming;
+
                 effectTransparent.a = Mathf.Lerp(sTransValue, eTransValue, time);
                 renderObj.material.color = effectTransparent;
                 yield return null;
@@ -130,9 +132,9 @@ public class BulletController : MonoBehaviour
                 time += Time.deltaTime / currentBulletData.disapearTiming;
 
 
-                renderObj.sprite = currentBulletData.endSprite[renderingIndex];
+                renderObj.sprite = endSprite[renderingIndex];
                 renderingIndex++;
-                if (renderingIndex == currentBulletData.endSprite.Length)
+                if (renderingIndex == endSprite.Length)
                 {
                     renderingIndex = 0;
                 }
@@ -148,25 +150,25 @@ public class BulletController : MonoBehaviour
     {
         Vector3 moveOffet = new Vector3();
 
-        switch (currentBulletData.dir)
+        switch (currentBulletData.GetBulletDirection())
         {
             //오른쪽을 기준으로 함.
-            case BulletModel.BULLET_DIRECTION.NONE:
+            case BULLET_DIRECTION.NONE:
                 moveOffet.x = moveOffet.y = moveOffet.z = 0;
                 break;
-            case BulletModel.BULLET_DIRECTION.LEFT:
+            case BULLET_DIRECTION.LEFT:
                 moveOffet.x = -1;
                 moveOffet.y = 0;
                 break;
-            case BulletModel.BULLET_DIRECTION.TOP:
+            case BULLET_DIRECTION.TOP:
                 moveOffet.x = 0;
                 moveOffet.y = 1;
                 break;
-            case BulletModel.BULLET_DIRECTION.RIGHT:
+            case BULLET_DIRECTION.RIGHT:
                 moveOffet.x = 1;
                 moveOffet.y = 0;
                 break;
-            case BulletModel.BULLET_DIRECTION.BOT:
+            case BULLET_DIRECTION.BOT:
                 moveOffet.x = 0;
                 moveOffet.y = -1;
                 break;
@@ -174,18 +176,14 @@ public class BulletController : MonoBehaviour
 
         switch (currentBulletData.motion)
         {
-            case BulletModel.MOTION_TYPE.NONE:
+            case MOTION_TYPE.NONE:
                 moveOffet.x *= 0.0f;
                 moveOffet.y *= 0.0f;
                 moveOffet.z *= 0.0f;
                 break;
-            case BulletModel.MOTION_TYPE.STRAIGHT:
-                moveOffet.x *= currentBulletData.weight.x;
-                moveOffet.y *= currentBulletData.weight.y;
-                break;
-            case BulletModel.MOTION_TYPE.CURVE:
-                //moveOffet.x = moveOffet.y = 1.0f;
-                //커브 미구현
+            case MOTION_TYPE.STRAIGHT:
+                moveOffet.x *= currentBulletData.GetShootingForce().x;
+                moveOffet.y *= currentBulletData.GetShootingForce().y;
                 break;
         }
         currentTransForm.position += moveOffet;
@@ -211,15 +209,13 @@ public class BulletController : MonoBehaviour
      * 5. 관통 유무
      * 6. 타겟 Layer
      */
-    public void setInitialize(BulletModel.BulletData argBulletData)
+    public void setInitialize(BulletData argBulletData)
     {
         currentBulletData = argBulletData;
 
         //시작지점이 현재지점임
-        startPosition = new Vector3(
-            this.gameObject.transform.position.x,
-            this.gameObject.transform.position.y,
-            this.gameObject.transform.position.z);
+        startPosition = currentBulletData.startPosition;
+        gameObject.transform.position = startPosition;
         currentTransForm = this.gameObject.transform;
         //데이터 세팅이 끝난 후 설정
         time = 0;

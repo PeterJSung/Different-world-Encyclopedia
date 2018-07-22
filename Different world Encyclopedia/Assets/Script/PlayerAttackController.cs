@@ -127,7 +127,6 @@ public class PlayerAttackController : MonoBehaviour {
         }
         else
         {
-            
             //Only For Test
             //무기에 맞는놈이 없으므로 파이어볼
             // Resources/Prefabs/Bullet.prefab 로드
@@ -142,13 +141,19 @@ public class PlayerAttackController : MonoBehaviour {
                 bullet.transform.localScale.y,
                 bullet.transform.localScale.z);
             BulletController bController = bullet.GetComponent<BulletController>();
-            BulletModel.BulletData argData = new BulletModel.BulletData();
-            argData.dir = (_defaultData.isRight ? BulletModel.BULLET_DIRECTION.RIGHT : BulletModel.BULLET_DIRECTION.LEFT);
-            argData.motion = BulletModel.MOTION_TYPE.STRAIGHT;
+            BulletDataStrightType argData = new BulletDataStrightType();
+            argData.dir = (_defaultData.isRight ? BULLET_DIRECTION.RIGHT : BULLET_DIRECTION.LEFT);
+            argData.motion = MOTION_TYPE.STRAIGHT;
             argData.sheetingsprite = alligatorSheetingObject;
             argData.endSprite = alligatorEndObject;
-            argData.weight = new Vector3(0.04f, 0.04f, 0.04f);
-            argData.penetrate = new BulletModel.PenetrateData(0,100.0f);
+            argData.shootingForce = new Vector2(0.04f,0.04f);
+
+            argData.startPosition = new Vector3(
+                bullet.transform.position.x,
+                weaponEffect.transform.position.y,
+                bullet.transform.position.z);
+
+            argData.penetrateCount = 1;
             argData.disapearTiming = 0.7f;
             argData.sheetingLength = 5.0f;
             argData.tLayer = new ArrayList();
@@ -174,15 +179,17 @@ public class PlayerAttackController : MonoBehaviour {
             bullet.transform.localScale.y,
             bullet.transform.localScale.z);
         BulletController bController = bullet.GetComponent<BulletController>();
-        BulletModel.BulletData argData = new BulletModel.BulletData();
-        argData.dir = (_defaultData.isRight ? BulletModel.BULLET_DIRECTION.RIGHT : BulletModel.BULLET_DIRECTION.LEFT);
-        argData.motion = BulletModel.MOTION_TYPE.STRAIGHT;
-        argData.sheetingsprite = alligatorSheetingObject;
-        argData.endSprite = alligatorEndObject;
-        argData.weight = new Vector3(0.04f, 0.04f, 0.04f);
-        argData.penetrate = new BulletModel.PenetrateData(1, 100.0f);
-        argData.disapearTiming = 0.7f;
-        argData.sheetingLength = 5.0f;
+        BulletDataFloatType argData = new BulletDataFloatType();
+        argData.floatTiming = 0.2f;
+        argData.motion = MOTION_TYPE.FLOAT;
+        argData.sheetingsprite = magitionSheetingObject;
+        argData.disapearTiming = 0.5f;
+
+        argData.startPosition = new Vector3(
+            bullet.transform.position.x + (_defaultData.isRight ? +0.4f : -0.4f),
+            weaponEffect.transform.position.y,
+            bullet.transform.position.z);
+
         argData.tLayer = new ArrayList();
         argData.tLayer.Add(GlobalLayerMask.ENEMY_MASK);
         bController.setInitialize(argData);
