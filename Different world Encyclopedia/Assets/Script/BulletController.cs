@@ -106,7 +106,6 @@ public class BulletController : MonoBehaviour
         float time = 0f;
 
         renderingIndex = 0;
-        Debug.Log("ENCALL");
         Sprite[] endSprite = currentBulletData.GetEndSprite();
         Debug.Log(endSprite);
         if (endSprite == null)

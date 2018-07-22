@@ -88,10 +88,11 @@ namespace DefinitionChar
             DEAD = 1, //피격
             HIT = 2, //사망
             JUMP = 4, //점프
-            ATTACK = 8, // 공격
-            MOVE = 16, //이동
-            DASH_MOVE = 32, // 대시
-            SKILL = 64 //스킬
+            RAVITATE = 8, //Ravitate 마법사전용
+            ATTACK = 16, // 공격
+            MOVE = 32, //이동
+            DASH_MOVE = 64, // 대시
+            SKILL = 128 //스킬
         }
 
         public static Dictionary<CHAR_TYPE, CharaterInfo> CHAR_GLOBAL_DEFAULT_DATA;

@@ -28,11 +28,15 @@ public class Playermove : MonoBehaviour
     //Charactor Handler
     private Weapon weaponController = null;
 
+    private RavitateFlag raviValue;
+
+
     void Awake()
     {
         capsuleCollider2D = this.GetComponent<CapsuleCollider2D>();
         animator = this.GetComponent<Animator>();
         moveValue = new MoveFlag();
+        raviValue = new RavitateFlag();
         this.rigid2D = GetComponent<Rigidbody2D>();
         weaponController = weaponObject.GetComponent<Weapon>();
     }
@@ -53,6 +57,7 @@ public class Playermove : MonoBehaviour
         CheckAttack();
         CheckJump();
         CheckMove();
+        CheckRavitate();
 
         DoingAction();
     }
@@ -75,10 +80,21 @@ public class Playermove : MonoBehaviour
                 //나머지 3순위 이벤트 모두 동일
                 if (this.IsStatus(CustomCharacterInfo.CHAR_STATUS.MOVE) || this.IsStatus(CustomCharacterInfo.CHAR_STATUS.DASH_MOVE))
                 {
-                    //이동
-                    this.transform.Translate(moveValue.moveWeight, 0, 0);
                     bool isRight = this.moveValue.moveWeight > 0;
                     transform.localScale = new Vector3(isRight ? 1 : -1, 1, 1);
+                    //이동
+                    if (this.IsStatus(CustomCharacterInfo.CHAR_STATUS.DASH_MOVE) && selectedCharacterType == CustomCharacterInfo.CHAR_TYPE.DRAGON)
+                    {
+                        this.transform.Translate(this.moveValue.moveWeight > 0 ? 3.0f : -3.0f, 0, 0);
+                        //Blink Action
+                        nowStatus &= ~CustomCharacterInfo.CHAR_STATUS.DASH_MOVE;
+                        moveValue.prevValue = KeyCode.None;
+                        this.moveValue.moveWeight = 0;
+                    }
+                    else
+                    {
+                        this.transform.Translate(moveValue.moveWeight, 0, 0);
+                    }
                     weaponController.setAttackDirection(isRight);
                 }
 
@@ -87,6 +103,14 @@ public class Playermove : MonoBehaviour
                     // 점프
                     this.rigid2D.AddForce(transform.up * JUMP_FORCE);
                     nowStatus &= ~CustomCharacterInfo.CHAR_STATUS.JUMP;
+                }
+
+                if (selectedCharacterType == CustomCharacterInfo.CHAR_TYPE.MAGITION && IsStatus(CustomCharacterInfo.CHAR_STATUS.RAVITATE))
+                {
+                    float yVel = rigid2D.velocity.y + Physics.gravity.y;
+
+                    //Howering
+                    rigid2D.AddForce(new Vector2(0, -yVel), ForceMode2D.Force);
                 }
 
                 if (this.IsStatus(CustomCharacterInfo.CHAR_STATUS.ATTACK))
@@ -112,6 +136,26 @@ public class Playermove : MonoBehaviour
         }
     }
 
+    void CheckRavitate()
+    {
+        if (selectedCharacterType == CustomCharacterInfo.CHAR_TYPE.MAGITION)
+        {
+            if (Input.GetKey(KeyCode.X))
+            {
+                if (raviValue.canRavitate && Time.time - raviValue.tDown > 0.2f)
+                {
+                    nowStatus |= CustomCharacterInfo.CHAR_STATUS.RAVITATE;
+                    raviValue.canRavitate = false;
+                }
+            }
+            
+            if (this.IsStatus(CustomCharacterInfo.CHAR_STATUS.RAVITATE) && Input.GetKeyUp(KeyCode.X))
+            {
+                nowStatus &= ~CustomCharacterInfo.CHAR_STATUS.RAVITATE;
+            }
+        }
+    }
+
     void CheckJump()
     {
         if (isGrounded)
@@ -119,8 +163,10 @@ public class Playermove : MonoBehaviour
             // 점프한다
             if (Input.GetKeyDown(KeyCode.X) && jumpcount > 0)
             {
+                isGrounded = false;
                 nowStatus |= CustomCharacterInfo.CHAR_STATUS.JUMP;
                 jumpcount--;
+                raviValue.tDown = Time.time;
             }
         }
     }
@@ -178,6 +224,7 @@ public class Playermove : MonoBehaviour
                     nowTile == TileType.FLOAT_GROUND)
                 {
                     isGrounded = true;
+                    raviValue.canRavitate = true;
                     jumpcount = m_stPlayerMove.m_iJumpCount;
                 }
                 break;
@@ -267,7 +314,17 @@ public class Playermove : MonoBehaviour
             Debug.Log("[LEFT]KEY PRESS");
         }
     }
-
+    
+    public class RavitateFlag
+    {
+        public float tDown;
+        public bool canRavitate;
+        public RavitateFlag()
+        {
+            tDown = Time.time;
+            canRavitate =true;
+        }
+    }
 
     public class MoveFlag
     {
