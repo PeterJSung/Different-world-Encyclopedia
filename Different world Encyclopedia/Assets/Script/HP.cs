@@ -23,7 +23,7 @@ public class HP : MonoBehaviour
     {
         if (HPGAGE)
         {
-            this.HPGAGE.GetComponent<Image>().fillAmount -= 0.001f;
+            this.HPGAGE.GetComponent<Image>().fillAmount -= 0.003f;
         }
     }
 }
