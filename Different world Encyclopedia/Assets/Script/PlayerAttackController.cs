@@ -31,11 +31,11 @@ public class PlayerAttackController : MonoBehaviour {
         parentsObject = this.transform.parent.transform;
 
         //악어야 공격 Sheeting & End Sprite Load
-        alligatorSheetingObject = Resources.LoadAll<Sprite>("Weapon/Alligator/AttackSheeting");
-        alligatorEndObject = Resources.LoadAll<Sprite>("Weapon/Alligator/AttackEnd");
+        alligatorSheetingObject = Resources.LoadAll<Sprite>("Character/Alligator/AttackSheeting");
+        alligatorEndObject = Resources.LoadAll<Sprite>("Character/Alligator/AttackEnd");
 
         //마법사 공격 sheeting 불러옴.
-        magitionSheetingObject = Resources.LoadAll<Sprite>("Weapon/Magition/AttackSheeting");
+        magitionSheetingObject = Resources.LoadAll<Sprite>("Character/Magition/AttackSheeting");
 
         prefbObject = Resources.Load("Prefabs/BulletDefaultAttack") as GameObject;
     }

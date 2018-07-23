@@ -238,7 +238,7 @@ GameObject:
   m_Component:
   - component: {fileID: 130913521}
   - component: {fileID: 130913522}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: CharacterTemplate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
