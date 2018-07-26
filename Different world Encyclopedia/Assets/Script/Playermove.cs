@@ -107,7 +107,7 @@ public class Playermove : MonoBehaviour
                         moveValue.prevValue = KeyCode.None;
                         this.moveValue.moveWeight = 0;
 
-                        StartCoroutine(BlinkAnimation(startPosition,nextPosition,isRight));
+                        StartCoroutine(BlinkAnimation(startPosition, nextPosition, isRight));
                     }
                     else
                     {
@@ -129,6 +129,7 @@ public class Playermove : MonoBehaviour
 
                     //Howering
                     rigid2D.AddForce(new Vector2(0, -yVel), ForceMode2D.Force);
+                    Debug.Log("RAVITATION ACTION " + yVel);
                 }
 
                 if (this.IsStatus(CustomCharacterInfo.CHAR_STATUS.ATTACK))
@@ -160,7 +161,7 @@ public class Playermove : MonoBehaviour
         {
             if (Input.GetKey(KeyCode.X))
             {
-                if (raviValue.canRavitate && Time.time - raviValue.tDown > 0.2f)
+                if (raviValue.canRavitate && Time.time - raviValue.tDown > 0.05f)
                 {
                     nowStatus |= CustomCharacterInfo.CHAR_STATUS.RAVITATE;
                     raviValue.canRavitate = false;
@@ -387,4 +388,3 @@ public class Playermove : MonoBehaviour
         }
     }
 }
-
