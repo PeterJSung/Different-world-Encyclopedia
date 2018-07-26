@@ -8,20 +8,25 @@ public class BossHpBar : MonoBehaviour {
     public GameObject BOSSHPBAR;
     public float FULL_HP_VALUE = 0;
     public float CURRENT_HP_VALUE = 0;
+    public float TARGET_HP_VALUE = 0;
+    //public float CURRENT_HP_PERCENTAGE = 1;
+    public bool IS_GAGE_ANIMATION_ON = false;
+    public bool IS_DEMAGE = false;
 
     // Use this for initialization
     void Start () {
 
         //test code 잘돼나ㅣ~?
-        initHPValue(1000, 500);
+        initHPValue(1000, 1000);
 
-        updateView(calculPercentage(-200));
+        //updateView(calculPercentage(-200));
+        updateGage(-400);
     }
 
     // Update is called once per frame
     void Update()
     {
-        //DecreaseHp();
+        gageController();
         
     }
 
@@ -33,38 +38,49 @@ public class BossHpBar : MonoBehaviour {
     {
         FULL_HP_VALUE = fullHP;
         CURRENT_HP_VALUE = currentHP;
+        //CURRENT_HP_PERCENTAGE = currentHP / fullHP;
 
         this.BOSSHPBAR.GetComponent<Image>().fillAmount = CURRENT_HP_VALUE / FULL_HP_VALUE;
     }
 
+    //게이지바가 가고자하는 체력 목표값을 설정하고
     //파라미터에 입력된 값이 총 몇퍼센트의 비중을 차지하는지 계산
-    public float calculPercentage(float val)
+    public void updateGage(float val)
     {
-        //float tmp_val = val;
-        //if (val < 0)
-        //    tmp_val *= -1;
+        TARGET_HP_VALUE = CURRENT_HP_VALUE + val;
+        if (val > 0)
+            IS_DEMAGE = false;
+        else
+            IS_DEMAGE = true;
 
-        return val / FULL_HP_VALUE;
+        IS_GAGE_ANIMATION_ON = true;
+
+        //return val / FULL_HP_VALUE;
     }
 
-    public void updateView(float percentage)
+    public void gageController()
     {
-        this.BOSSHPBAR.GetComponent<Image>().fillAmount += percentage;
-    }
-
-    public void DecreaseHp()
-    {
-        if (BOSSHPBAR)
+        if (IS_GAGE_ANIMATION_ON)
         {
-            this.BOSSHPBAR.GetComponent<Image>().fillAmount -= 0.001f;
+            if(IS_DEMAGE)//데미지일 경우
+            {
+                if (TARGET_HP_VALUE / FULL_HP_VALUE <= this.BOSSHPBAR.GetComponent<Image>().fillAmount)
+                    this.BOSSHPBAR.GetComponent<Image>().fillAmount -= 0.01f;
+                else
+                    IS_GAGE_ANIMATION_ON = false;
+            }
+            else  //힐일 경우
+            {
+                if(TARGET_HP_VALUE / FULL_HP_VALUE >= this.BOSSHPBAR.GetComponent<Image>().fillAmount)
+                   this.BOSSHPBAR.GetComponent<Image>().fillAmount += 0.01f;
+                else
+                    IS_GAGE_ANIMATION_ON = false;
+            }
+            
         }
     }
 
-
-    public void setFullHP()
-    {
-
-    }
+    
 
 
 }
