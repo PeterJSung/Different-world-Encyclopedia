@@ -107,7 +107,6 @@ public class BulletController : MonoBehaviour
 
         renderingIndex = 0;
         Sprite[] endSprite = currentBulletData.GetEndSprite();
-        Debug.Log(endSprite);
         if (endSprite == null)
         {
             float sTransValue = 1.0f;

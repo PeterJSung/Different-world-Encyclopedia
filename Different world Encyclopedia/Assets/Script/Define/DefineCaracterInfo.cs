@@ -39,6 +39,9 @@ namespace DefinitionChar
         public float m_fMoveWeight;
 
         public float m_fJumpForce;
+        public float m_fBlinkDuration;
+        public float m_fBlinkDistance;
+        public int m_iBlinkStep;
         public int m_iJumpCount;
         public bool m_bIsBlink;
 
@@ -126,8 +129,8 @@ namespace DefinitionChar
 
                     ret.m_sPlaerWeapon.m_fAttackSpeed = 0.40f;
                     ret.m_sPlaerWeapon.m_bIsEnableWeaponHit = true;
-                    ret.m_sPlaerWeapon.m_sWaeponSpritePath = "Weapon/Alligator/Merona";
-                    ret.m_sPlaerWeapon.m_sWaeponEffectPath = "Weapon/Common/Swing";
+                    ret.m_sPlaerWeapon.m_sWaeponSpritePath = "Character/Alligator/Merona";
+                    ret.m_sPlaerWeapon.m_sWaeponEffectPath = "Character/Common/Swing";
 
                     ret.m_sPlayerMove.m_fJumpForce = 400.0f;
                     ret.m_sPlayerMove.m_v2CharacterColliderArea = new Vector2(0.45f, 0.58f);
@@ -153,8 +156,8 @@ namespace DefinitionChar
 
                     ret.m_sPlaerWeapon.m_fAttackSpeed = 1.2f;
                     ret.m_sPlaerWeapon.m_bIsEnableWeaponHit = false;
-                    ret.m_sPlaerWeapon.m_sWaeponSpritePath = "Weapon/Magition/Stick";
-                    ret.m_sPlaerWeapon.m_sWaeponEffectPath = "Weapon/Common/MagicFildRed";
+                    ret.m_sPlaerWeapon.m_sWaeponSpritePath = "Character/Magition/Stick";
+                    ret.m_sPlaerWeapon.m_sWaeponEffectPath = "Character/Magition/MagicFildRed";
 
                     ret.m_sPlayerMove.m_fJumpForce = 300.0f;
                     ret.m_sPlayerMove.m_v2CharacterColliderArea = new Vector2(0.45f, 0.70f);
@@ -180,8 +183,8 @@ namespace DefinitionChar
 
                     ret.m_sPlaerWeapon.m_fAttackSpeed = 0.6f;
                     ret.m_sPlaerWeapon.m_bIsEnableWeaponHit = true;
-                    ret.m_sPlaerWeapon.m_sWaeponSpritePath = "Weapon/Dragon/Axe";
-                    ret.m_sPlaerWeapon.m_sWaeponEffectPath = "Weapon/Common/Swing";
+                    ret.m_sPlaerWeapon.m_sWaeponSpritePath = "Character/Dragon/Axe";
+                    ret.m_sPlaerWeapon.m_sWaeponEffectPath = "Character/Common/Swing";
 
                     ret.m_sPlayerMove.m_fJumpForce = 400.0f;
                     ret.m_sPlayerMove.m_v2CharacterColliderArea = new Vector2(0.45f, 0.70f);
@@ -189,6 +192,9 @@ namespace DefinitionChar
                     ret.m_sPlayerMove.m_bIsBlink = true;
                     ret.m_sPlayerMove.m_bIsEnableRavitate = false;
                     ret.m_sPlayerMove.m_sPlayerSpritePath = "Anim/Player/DragonH_0";
+                    ret.m_sPlayerMove.m_fBlinkDistance = 3.0f;
+                    ret.m_sPlayerMove.m_fBlinkDuration = 1.0f;
+                    ret.m_sPlayerMove.m_iBlinkStep = 7;
                     break;
                 case CHAR_TYPE.HERO:
                     ret.m_sPlaerWeapon.m_fWeaponAxisStart = 20.0f;
@@ -205,8 +211,8 @@ namespace DefinitionChar
 
                     ret.m_sPlaerWeapon.m_fAttackSpeed = 0.6f;
                     ret.m_sPlaerWeapon.m_bIsEnableWeaponHit = true;
-                    ret.m_sPlaerWeapon.m_sWaeponSpritePath = "Weapon/Hero/sword";
-                    ret.m_sPlaerWeapon.m_sWaeponEffectPath = "Weapon/Common/Swing";
+                    ret.m_sPlaerWeapon.m_sWaeponSpritePath = "Character/Hero/sword";
+                    ret.m_sPlaerWeapon.m_sWaeponEffectPath = "Character/Common/Swing";
 
                     ret.m_sPlayerMove.m_fJumpForce = 400.0f;
                     ret.m_sPlayerMove.m_v2CharacterColliderArea = new Vector2(0.45f, 0.75f);
