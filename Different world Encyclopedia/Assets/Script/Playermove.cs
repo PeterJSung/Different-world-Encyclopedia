@@ -4,6 +4,7 @@ using DefinitionChar;
 public class Playermove : MonoBehaviour
 {
     private CharaterInfo currentCharInfo;
+    private PlayerSkill skillController = null;
     private PlayerMoveData m_stPlayerMove;
     private CustomCharacterInfo.CHAR_TYPE selectedCharacterType;
     public GameObject weaponObject;
@@ -39,6 +40,7 @@ public class Playermove : MonoBehaviour
         raviValue = new RavitateFlag();
         this.rigid2D = GetComponent<Rigidbody2D>();
         weaponController = weaponObject.GetComponent<Weapon>();
+        skillController = gameObject.GetComponent<PlayerSkill>();
     }
 
     void Start()
@@ -59,9 +61,13 @@ public class Playermove : MonoBehaviour
         CheckMove();
         CheckRavitate();
 
-        DoingAction();
+
     }
 
+    void FixedUpdate()
+    {
+        DoingAction();
+    }
 
     void DoingAction()
     {
@@ -107,8 +113,7 @@ public class Playermove : MonoBehaviour
 
                 if (selectedCharacterType == CustomCharacterInfo.CHAR_TYPE.MAGITION && IsStatus(CustomCharacterInfo.CHAR_STATUS.RAVITATE))
                 {
-                    float yVel = rigid2D.velocity.y + Physics.gravity.y;
-
+                    float yVel = (rigid2D.velocity.y + Physics.gravity.y) * rigid2D.gravityScale;
                     //Howering
                     rigid2D.AddForce(new Vector2(0, -yVel), ForceMode2D.Force);
                 }
@@ -122,6 +127,7 @@ public class Playermove : MonoBehaviour
 
                 if (this.IsStatus(CustomCharacterInfo.CHAR_STATUS.SKILL))
                 {
+                    skillController.ActionSkill(selectedCharacterType);
                     // 스킬
                 }
             }
@@ -148,27 +154,26 @@ public class Playermove : MonoBehaviour
                     raviValue.canRavitate = false;
                 }
             }
-            
+
             if (this.IsStatus(CustomCharacterInfo.CHAR_STATUS.RAVITATE) && Input.GetKeyUp(KeyCode.X))
             {
                 nowStatus &= ~CustomCharacterInfo.CHAR_STATUS.RAVITATE;
+                raviValue.canRavitate = true;
             }
         }
     }
 
     void CheckJump()
     {
-        if (isGrounded)
+        if (Input.GetKeyDown(KeyCode.X) && jumpcount > 0)
         {
-            // 점프한다
-            if (Input.GetKeyDown(KeyCode.X) && jumpcount > 0)
-            {
-                isGrounded = false;
-                nowStatus |= CustomCharacterInfo.CHAR_STATUS.JUMP;
-                jumpcount--;
-                raviValue.tDown = Time.time;
-            }
+            Debug.Log("JUMP");
+            isGrounded = false;
+            nowStatus |= CustomCharacterInfo.CHAR_STATUS.JUMP;
+            jumpcount--;
+            raviValue.tDown = Time.time;
         }
+
     }
 
     void CheckMove()
@@ -224,7 +229,6 @@ public class Playermove : MonoBehaviour
                     nowTile == TileType.FLOAT_GROUND)
                 {
                     isGrounded = true;
-                    raviValue.canRavitate = true;
                     jumpcount = m_stPlayerMove.m_iJumpCount;
                 }
                 break;
@@ -280,41 +284,6 @@ public class Playermove : MonoBehaviour
         capsuleCollider2D.size = m_stPlayerMove.m_v2CharacterColliderArea;
     }
 
-    void DEBUG_KEY_FUNCTION()
-    {
-        if (Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            Debug.Log("[RIGHT]KEY DOWN");
-        }
-
-        if (Input.GetKeyUp(KeyCode.RightArrow))
-        {
-            Debug.Log("[RIGHT]KEY UP");
-        }
-
-        if (Input.GetKey(KeyCode.RightArrow))
-        {
-            Debug.Log("[RIGHT]KEY PRESS");
-        }
-
-
-        //
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            Debug.Log("[LEFT]KEY DOWN");
-        }
-
-        if (Input.GetKeyUp(KeyCode.LeftArrow))
-        {
-            Debug.Log("[LEFT]KEY UP");
-        }
-
-        if (Input.GetKey(KeyCode.LeftArrow))
-        {
-            Debug.Log("[LEFT]KEY PRESS");
-        }
-    }
-    
     public class RavitateFlag
     {
         public float tDown;
@@ -322,7 +291,7 @@ public class Playermove : MonoBehaviour
         public RavitateFlag()
         {
             tDown = Time.time;
-            canRavitate =true;
+            canRavitate = true;
         }
     }
 

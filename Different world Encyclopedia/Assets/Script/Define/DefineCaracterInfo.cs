@@ -129,6 +129,7 @@ namespace DefinitionChar
                     ret.m_sPlaerWeapon.m_sWaeponSpritePath = "Weapon/Alligator/Merona";
                     ret.m_sPlaerWeapon.m_sWaeponEffectPath = "Weapon/Common/Swing";
 
+                    ret.m_sPlayerMove.m_fJumpForce = 400.0f;
                     ret.m_sPlayerMove.m_v2CharacterColliderArea = new Vector2(0.45f, 0.58f);
                     ret.m_sPlayerMove.m_iJumpCount = 2;
                     ret.m_sPlayerMove.m_bIsBlink = false;
@@ -155,6 +156,7 @@ namespace DefinitionChar
                     ret.m_sPlaerWeapon.m_sWaeponSpritePath = "Weapon/Magition/Stick";
                     ret.m_sPlaerWeapon.m_sWaeponEffectPath = "Weapon/Common/MagicFildRed";
 
+                    ret.m_sPlayerMove.m_fJumpForce = 300.0f;
                     ret.m_sPlayerMove.m_v2CharacterColliderArea = new Vector2(0.45f, 0.70f);
                     ret.m_sPlayerMove.m_iJumpCount = 1;
                     ret.m_sPlayerMove.m_bIsBlink = false;
@@ -181,6 +183,7 @@ namespace DefinitionChar
                     ret.m_sPlaerWeapon.m_sWaeponSpritePath = "Weapon/Dragon/Axe";
                     ret.m_sPlaerWeapon.m_sWaeponEffectPath = "Weapon/Common/Swing";
 
+                    ret.m_sPlayerMove.m_fJumpForce = 400.0f;
                     ret.m_sPlayerMove.m_v2CharacterColliderArea = new Vector2(0.45f, 0.70f);
                     ret.m_sPlayerMove.m_iJumpCount = 1;
                     ret.m_sPlayerMove.m_bIsBlink = true;
@@ -205,6 +208,7 @@ namespace DefinitionChar
                     ret.m_sPlaerWeapon.m_sWaeponSpritePath = "Weapon/Hero/sword";
                     ret.m_sPlaerWeapon.m_sWaeponEffectPath = "Weapon/Common/Swing";
 
+                    ret.m_sPlayerMove.m_fJumpForce = 400.0f;
                     ret.m_sPlayerMove.m_v2CharacterColliderArea = new Vector2(0.45f, 0.75f);
                     ret.m_sPlayerMove.m_iJumpCount = 1;
                     ret.m_sPlayerMove.m_bIsBlink = false;
@@ -214,7 +218,7 @@ namespace DefinitionChar
             }
             ret.m_sPlayerMove.m_fDashMoveWeight = 0.06f;
             ret.m_sPlayerMove.m_fMoveWeight = 0.03f;
-            ret.m_sPlayerMove.m_fJumpForce = 400.0f;
+            
             return ret;
         }
 
