@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 using DefinitionChar;
-using System.Collections;
 
 public class Playermove : MonoBehaviour
 {
     private CharaterInfo currentCharInfo;
+    // private PlayerSkill skillController = null;
     private PlayerMoveData m_stPlayerMove;
     private CustomCharacterInfo.CHAR_TYPE selectedCharacterType;
     public GameObject weaponObject;
@@ -30,7 +30,7 @@ public class Playermove : MonoBehaviour
     private Weapon weaponController = null;
 
     private RavitateFlag raviValue;
-    private GameObject blinkPrefab = null;
+
 
     void Awake()
     {
@@ -40,8 +40,7 @@ public class Playermove : MonoBehaviour
         raviValue = new RavitateFlag();
         this.rigid2D = GetComponent<Rigidbody2D>();
         weaponController = weaponObject.GetComponent<Weapon>();
-
-        blinkPrefab = Resources.Load("Prefabs/BlinkObject") as GameObject;
+        //skillController = gameObject.GetComponent<PlayerSkill>();
     }
 
     void Start()
@@ -62,6 +61,11 @@ public class Playermove : MonoBehaviour
         CheckMove();
         CheckRavitate();
 
+
+    }
+
+    void FixedUpdate()
+    {
         DoingAction();
     }
 
@@ -85,29 +89,13 @@ public class Playermove : MonoBehaviour
                     bool isRight = this.moveValue.moveWeight > 0;
                     transform.localScale = new Vector3(isRight ? 1 : -1, 1, 1);
                     //이동
-                    if (isBlink && this.IsStatus(CustomCharacterInfo.CHAR_STATUS.DASH_MOVE))
+                    if (this.IsStatus(CustomCharacterInfo.CHAR_STATUS.DASH_MOVE) && selectedCharacterType == CustomCharacterInfo.CHAR_TYPE.DRAGON)
                     {
-                        RaycastHit2D rayHitData = Physics2D.Raycast(
-                            new Vector2(transform.position.x, transform.position.y),
-                            new Vector2(isRight ? 1 : -1, 0),
-                            m_stPlayerMove.m_fBlinkDistance, 1 << GlobalLayerMask.TERRIAN_MASK);
-                        bool canMaxBlink = rayHitData.collider ? false : true;
-                        Vector3 startPosition = gameObject.transform.position;
-                        Vector3 nextPosition = new Vector3(
-                            canMaxBlink ?
-                                startPosition.x + (isRight ? m_stPlayerMove.m_fBlinkDistance : -m_stPlayerMove.m_fBlinkDistance) :
-                                rayHitData.point.x,
-                            startPosition.y,
-                            startPosition.z);
-
+                        this.transform.Translate(this.moveValue.moveWeight > 0 ? 3.0f : -3.0f, 0, 0);
                         //Blink Action
-                        this.transform.position = nextPosition;
-                        //Clear Data Blink 직후 멈춰야함.
                         nowStatus &= ~CustomCharacterInfo.CHAR_STATUS.DASH_MOVE;
                         moveValue.prevValue = KeyCode.None;
                         this.moveValue.moveWeight = 0;
-
-                        StartCoroutine(BlinkAnimation(startPosition, nextPosition, isRight));
                     }
                     else
                     {
@@ -123,13 +111,11 @@ public class Playermove : MonoBehaviour
                     nowStatus &= ~CustomCharacterInfo.CHAR_STATUS.JUMP;
                 }
 
-                if (isRavitate && IsStatus(CustomCharacterInfo.CHAR_STATUS.RAVITATE))
+                if (selectedCharacterType == CustomCharacterInfo.CHAR_TYPE.MAGITION && IsStatus(CustomCharacterInfo.CHAR_STATUS.RAVITATE))
                 {
-                    float yVel = rigid2D.velocity.y + Physics.gravity.y;
-
+                    float yVel = (rigid2D.velocity.y + Physics.gravity.y) * rigid2D.gravityScale;
                     //Howering
                     rigid2D.AddForce(new Vector2(0, -yVel), ForceMode2D.Force);
-                    Debug.Log("RAVITATION ACTION " + yVel);
                 }
 
                 if (this.IsStatus(CustomCharacterInfo.CHAR_STATUS.ATTACK))
@@ -141,6 +127,7 @@ public class Playermove : MonoBehaviour
 
                 if (this.IsStatus(CustomCharacterInfo.CHAR_STATUS.SKILL))
                 {
+                    //  skillController.ActionSkill(selectedCharacterType);
                     // 스킬
                 }
             }
@@ -157,11 +144,11 @@ public class Playermove : MonoBehaviour
 
     void CheckRavitate()
     {
-        if (isRavitate)
+        if (selectedCharacterType == CustomCharacterInfo.CHAR_TYPE.MAGITION)
         {
             if (Input.GetKey(KeyCode.X))
             {
-                if (raviValue.canRavitate && Time.time - raviValue.tDown > 0.05f)
+                if (raviValue.canRavitate && Time.time - raviValue.tDown > 0.2f)
                 {
                     nowStatus |= CustomCharacterInfo.CHAR_STATUS.RAVITATE;
                     raviValue.canRavitate = false;
@@ -171,16 +158,16 @@ public class Playermove : MonoBehaviour
             if (this.IsStatus(CustomCharacterInfo.CHAR_STATUS.RAVITATE) && Input.GetKeyUp(KeyCode.X))
             {
                 nowStatus &= ~CustomCharacterInfo.CHAR_STATUS.RAVITATE;
+                raviValue.canRavitate = true;
             }
         }
     }
 
     void CheckJump()
     {
-
-        // 점프한다
         if (Input.GetKeyDown(KeyCode.X) && jumpcount > 0)
         {
+            Debug.Log("JUMP");
             isGrounded = false;
             nowStatus |= CustomCharacterInfo.CHAR_STATUS.JUMP;
             jumpcount--;
@@ -242,7 +229,6 @@ public class Playermove : MonoBehaviour
                     nowTile == TileType.FLOAT_GROUND)
                 {
                     isGrounded = true;
-                    raviValue.canRavitate = true;
                     jumpcount = m_stPlayerMove.m_iJumpCount;
                 }
                 break;
@@ -298,41 +284,6 @@ public class Playermove : MonoBehaviour
         capsuleCollider2D.size = m_stPlayerMove.m_v2CharacterColliderArea;
     }
 
-    void DEBUG_KEY_FUNCTION()
-    {
-        if (Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            Debug.Log("[RIGHT]KEY DOWN");
-        }
-
-        if (Input.GetKeyUp(KeyCode.RightArrow))
-        {
-            Debug.Log("[RIGHT]KEY UP");
-        }
-
-        if (Input.GetKey(KeyCode.RightArrow))
-        {
-            Debug.Log("[RIGHT]KEY PRESS");
-        }
-
-
-        //
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            Debug.Log("[LEFT]KEY DOWN");
-        }
-
-        if (Input.GetKeyUp(KeyCode.LeftArrow))
-        {
-            Debug.Log("[LEFT]KEY UP");
-        }
-
-        if (Input.GetKey(KeyCode.LeftArrow))
-        {
-            Debug.Log("[LEFT]KEY PRESS");
-        }
-    }
-
     public class RavitateFlag
     {
         public float tDown;
@@ -361,30 +312,5 @@ public class Playermove : MonoBehaviour
     {
         selectedCharacterType = argType;
         ReLoadingCharacter();
-    }
-
-    private IEnumerator BlinkAnimation(Vector3 startPosition, Vector3 nextPosition, bool isRight)
-    {
-        //잔상 단계는 총 5개 최종 위치를 포함한 총 포지션은 6개로 잡는다
-        //잔상 1 처음위치(0/5)  Alpha 20% 
-        //잔상 2 다음1(1/5) Alpha 40% 
-        //잔상 3 다음2(2/5) Alpha 60% 
-        //잔상 4 다음3(3/5) Alpha 80% 
-        //잔상 5 다음4(4/5) Alpha 100% 
-        //현재캐릭터(5/5) 종료위치
-
-        float eachDuration = m_stPlayerMove.m_fBlinkDuration / m_stPlayerMove.m_iBlinkStep;
-        float xMove = (nextPosition.x - startPosition.x) / m_stPlayerMove.m_iBlinkStep;
-        Color setColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-        for (int i = 0; i < m_stPlayerMove.m_iBlinkStep; i++)
-        {
-            GameObject blinkObject = MonoBehaviour.Instantiate(blinkPrefab) as GameObject;
-            setColor.a = (float)(i + 1) / m_stPlayerMove.m_iBlinkStep;
-            blinkObject.transform.position = new Vector3(startPosition.x + (xMove * i), startPosition.y, startPosition.z);
-            blinkObject.transform.localScale = new Vector3(isRight ? 1 : -1, 1, 1);
-            blinkObject.GetComponent<SpriteRenderer>().material.color = setColor;
-            yield return null;//new WaitForSeconds(eachDuration);
-            Object.Destroy(blinkObject, eachDuration);
-        }
     }
 }
