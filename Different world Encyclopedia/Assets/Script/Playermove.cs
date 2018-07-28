@@ -381,6 +381,8 @@ public class Playermove : MonoBehaviour
         //모든 플래그 전부 초기화.
         raviValue = new RavitateFlag();
         moveValue = new MoveFlag();
+
+        nowStatus |= CustomCharacterInfo.CHAR_STATUS.GROUND;
     }
 
     public void setCharacterType(CustomCharacterInfo.CHAR_TYPE argType)

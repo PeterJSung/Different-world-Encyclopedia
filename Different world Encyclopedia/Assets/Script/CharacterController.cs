@@ -44,10 +44,8 @@ public class CharacterController : MonoBehaviour {
                 //A를 누를 시
                 CustomCharacterInfo.CHAR_TYPE origin = characterQueue.getVaule();
                 characterQueue.goLeft();
-                moveScript.setCharacterType(characterQueue.getVaule());
-
                 CustomCharacterInfo.CHAR_TYPE next = characterQueue.getVaule();
-                //StartCoroutine(SwitchAnimation(origin, next));
+                StartCoroutine(SwitchAnimation(origin, next));
             } else if (Input.GetKeyDown(KeyCode.S))
             {
                 //S를 누를 시
@@ -69,24 +67,21 @@ public class CharacterController : MonoBehaviour {
 
         // 우선 스프라이트가 위에서 설정되서 내려온다
         // Effect Script On 변경할 캐릭터가 내려와야함.
-
-        effectScript.SetModeFalldown(switchType);
+        Debug.Log(originType);
+        Debug.Log(switchType);
+        effectScript.SetModeFalldown(switchType, moveScript.IsRight());
         
         //캐릭터 공중에 올려놓는다.
         
         //캐릭터가 지면에 닿을동안 대기.
         yield return new WaitUntil(() => effectScript.IsLanding() == true);
-        Debug.Log("IsLanding Here");
         //닿으면 연기 Effect 설정.
-
-        moveScript.IsRight();
-        yield return null;
-
+        
         //캐릭터 변경.
+        effectScript.SetModeDisappear(originType, moveScript.IsRight());
         moveScript.setCharacterType(switchType);
-
         //연기 effect 와 동시에 캐릭터 왼쪽 오른쪽 여부 판단하여 애니메이션 작동
-
+        yield return new WaitUntil(() => effectScript.IsEndAni() == true);
 
 
         //모든 애니메이션 동작 완료 시 해당 다시 Release
