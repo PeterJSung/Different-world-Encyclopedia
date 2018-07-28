@@ -50,6 +50,13 @@ public class BulletController : MonoBehaviour
     void Start()
     {
         renderObj = gameObject.GetComponent<SpriteRenderer>();
+        if (currentBulletData != null && currentBulletData.GetStartSprite() != null)
+        {
+            StartCoroutine(StartAnimation());
+        } else
+        {
+            isStart = true;
+        }
     }
 
     // Update is called once per frame
@@ -98,6 +105,20 @@ public class BulletController : MonoBehaviour
         }
     }
 
+    IEnumerator StartAnimation()
+    {
+        renderingIndex = 0;
+        Sprite[] startSprite = currentBulletData.GetStartSprite();
+        for(int i = 0; i < startSprite.Length; i++)
+        {
+            renderObj.sprite = startSprite[renderingIndex];
+            renderingIndex++;
+            yield return null;
+        }
+        isStart = true;
+        renderingIndex = 0;
+    }
+
     IEnumerator EndAnimation()
     {
         isStart = false;
@@ -109,6 +130,7 @@ public class BulletController : MonoBehaviour
         Sprite[] endSprite = currentBulletData.GetEndSprite();
         if (endSprite == null)
         {
+            //End Sprite 가 없을경우 Aplpha 값 변경으로 사라진다/
             float sTransValue = 1.0f;
             float eTransValue = 0.0f;
 
@@ -125,19 +147,32 @@ public class BulletController : MonoBehaviour
         }
         else
         {
-            while (time < currentBulletData.disapearTiming)
+            if (currentBulletData.GetStartSprite() != null)
             {
-                time += Time.deltaTime / currentBulletData.disapearTiming;
-
-
-                renderObj.sprite = endSprite[renderingIndex];
-                renderingIndex++;
-                if (renderingIndex == endSprite.Length)
+                //End sprite 도 있고 strt Sprite 도 있는경우 대칭을위해 프레임단위로 랜더링ㅎ나다/.
+                for (int i = 0; i < endSprite.Length; i++)
                 {
-                    renderingIndex = 0;
+                    renderObj.sprite = endSprite[renderingIndex];
+                    renderingIndex++;
+                    yield return null;
                 }
+            }
+            else
+            {
+                while (time < currentBulletData.disapearTiming)
+                {
+                    time += Time.deltaTime / currentBulletData.disapearTiming;
 
-                yield return null;
+
+                    renderObj.sprite = endSprite[renderingIndex];
+                    renderingIndex++;
+                    if (renderingIndex == endSprite.Length)
+                    {
+                        renderingIndex = 0;
+                    }
+
+                    yield return null;
+                }
             }
         }
         Destroy(this.gameObject);
@@ -217,6 +252,6 @@ public class BulletController : MonoBehaviour
         currentTransForm = this.gameObject.transform;
         //데이터 세팅이 끝난 후 설정
         time = 0;
-        isStart = true;
+        
     }
 }

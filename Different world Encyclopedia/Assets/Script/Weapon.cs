@@ -97,7 +97,6 @@ public class Weapon : MonoBehaviour
                 break;
         }
 
-
         canAttack = true;
     }
 

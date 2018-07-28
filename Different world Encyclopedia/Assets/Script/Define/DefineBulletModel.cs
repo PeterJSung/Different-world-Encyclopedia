@@ -55,6 +55,7 @@ namespace DefineBulletModel
         public virtual bool CanPenetrate() { return true; }
         public virtual void DoPenetrate() {  }
 
+        public virtual Sprite[] GetStartSprite() { return null; }
         public virtual Sprite[] GetSheetingSprite() { return sheetingsprite; }
         public virtual Sprite[] GetEndSprite() { return null;  }
 
@@ -62,11 +63,22 @@ namespace DefineBulletModel
 
     public class BulletDataFloatType : BulletData
     {
+        public Sprite[] startprite = null;
         public float floatTiming;
-        
+        public Sprite[] endSprite = null;
         public override float GetFloattingTimimg()
         {
             return floatTiming;
+        }
+
+        public override Sprite[] GetStartSprite()
+        {
+            return startprite;
+        }
+
+        public override Sprite[] GetEndSprite()
+        {
+            return endSprite;
         }
     }
 

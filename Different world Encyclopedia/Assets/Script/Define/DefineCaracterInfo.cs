@@ -192,9 +192,9 @@ namespace DefinitionChar
                     ret.m_sPlayerMove.m_bIsBlink = true;
                     ret.m_sPlayerMove.m_bIsEnableRavitate = false;
                     ret.m_sPlayerMove.m_sPlayerSpritePath = "Anim/Player/DragonH_0";
-                    ret.m_sPlayerMove.m_fBlinkDistance = 3.0f;
-                    ret.m_sPlayerMove.m_fBlinkDuration = 1.0f;
-                    ret.m_sPlayerMove.m_iBlinkStep = 7;
+                    ret.m_sPlayerMove.m_fBlinkDistance = 1.5f;
+                    ret.m_sPlayerMove.m_fBlinkDuration = 0.8f;
+                    ret.m_sPlayerMove.m_iBlinkStep = 5;
                     break;
                 case CHAR_TYPE.HERO:
                     ret.m_sPlaerWeapon.m_fWeaponAxisStart = 20.0f;

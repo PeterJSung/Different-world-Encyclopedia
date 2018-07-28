@@ -62,8 +62,6 @@ public class Playermove : MonoBehaviour
         CheckJump();
         CheckMove();
         CheckRavitate();
-
-
     }
 
     void FixedUpdate()
@@ -133,7 +131,6 @@ public class Playermove : MonoBehaviour
                     float yVel = (rigid2D.velocity.y + Physics.gravity.y) * rigid2D.gravityScale;
                     //Howering
                     rigid2D.AddForce(new Vector2(0, -yVel), ForceMode2D.Force);
-                    Debug.Log("RAVITATION ACTION " + yVel);
                 }
 
                 if (this.IsStatus(CustomCharacterInfo.CHAR_STATUS.ATTACK))
@@ -166,7 +163,7 @@ public class Playermove : MonoBehaviour
         {
             if (Input.GetKey(KeyCode.X))
             {
-                if (raviValue.canRavitate && Time.time - raviValue.tDown > 0.05f)
+                if (raviValue.canRavitate && Time.time - raviValue.tDown > 0.2f)
                 {
                     nowStatus |= CustomCharacterInfo.CHAR_STATUS.RAVITATE;
                     raviValue.canRavitate = false;
