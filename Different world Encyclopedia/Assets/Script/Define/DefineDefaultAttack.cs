@@ -10,16 +10,17 @@ namespace DefineDefaultAttack
         public float m_fWeaponAxisStart;
         public float m_fWeaponAxisEnd;
 
-        public bool isRight;
         public ArrayList hitList;
 
-        public DefaultAttackData(float _attackSpeed, float _weaponAxisStart, float _weaponAxisEnd,bool _isRight ,ArrayList _hitList)
+        public IsRight rightFunctionPointer;
+        public DefaultAttackData(float _attackSpeed, float _weaponAxisStart, float _weaponAxisEnd, IsRight _rightFunctionPointer, ArrayList _hitList)
         {
             m_fAttackSpeed = _attackSpeed;
             m_fWeaponAxisStart = _weaponAxisStart;
             m_fWeaponAxisEnd = _weaponAxisEnd;
-            isRight = _isRight;
             hitList = _hitList;
+
+            rightFunctionPointer = _rightFunctionPointer;
         }
     }
 

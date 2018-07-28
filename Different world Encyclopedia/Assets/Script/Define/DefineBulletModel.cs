@@ -42,9 +42,13 @@ namespace DefineBulletModel
         public Vector3 startPosition;
         public float disapearTiming;
         public ArrayList tLayer = null;
+        public IsRight rightCheckFunction;
 
         //For Interface
         //Float
+        public bool GetIsRight() { return rightCheckFunction == null ? false : rightCheckFunction(); }
+
+        public virtual GameObject GetStandardPosition() { return null; }
         public virtual float GetFloattingTimimg() { return 0; }
 
         //Straight
@@ -66,6 +70,7 @@ namespace DefineBulletModel
         public Sprite[] startprite = null;
         public float floatTiming;
         public Sprite[] endSprite = null;
+        public GameObject standardPosition = null;
         public override float GetFloattingTimimg()
         {
             return floatTiming;
@@ -79,6 +84,11 @@ namespace DefineBulletModel
         public override Sprite[] GetEndSprite()
         {
             return endSprite;
+        }
+
+        public override GameObject GetStandardPosition()
+        {
+            return standardPosition;
         }
     }
 

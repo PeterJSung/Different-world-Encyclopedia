@@ -41,6 +41,7 @@ public class Playermove : MonoBehaviour
         raviValue = new RavitateFlag();
         this.rigid2D = GetComponent<Rigidbody2D>();
         weaponController = weaponObject.GetComponent<Weapon>();
+        weaponController.setAttackDirection(IsRight);
 
         blinkPrefab = Resources.Load("Prefabs/BlinkObject") as GameObject;
     }
@@ -85,20 +86,19 @@ public class Playermove : MonoBehaviour
                 //나머지 3순위 이벤트 모두 동일
                 if (this.IsStatus(CustomCharacterInfo.CHAR_STATUS.MOVE) || this.IsStatus(CustomCharacterInfo.CHAR_STATUS.DASH_MOVE))
                 {
-                    bool isRight = this.moveValue.moveWeight > 0;
-                    transform.localScale = new Vector3(isRight ? 1 : -1, 1, 1);
+                    transform.localScale = new Vector3(this.moveValue.moveWeight > 0 ? 1 : -1, 1, 1);
                     //이동
                     if (isBlink && this.IsStatus(CustomCharacterInfo.CHAR_STATUS.DASH_MOVE))
                     {
                         RaycastHit2D rayHitData = Physics2D.Raycast(
                             new Vector2(transform.position.x, transform.position.y),
-                            new Vector2(isRight ? 1 : -1, 0),
+                            new Vector2(IsRight() ? 1 : -1, 0),
                             m_stPlayerMove.m_fBlinkDistance, 1 << GlobalLayerMask.TERRIAN_MASK);
                         bool canMaxBlink = rayHitData.collider ? false : true;
                         Vector3 startPosition = gameObject.transform.position;
                         Vector3 nextPosition = new Vector3(
                             canMaxBlink ?
-                                startPosition.x + (isRight ? m_stPlayerMove.m_fBlinkDistance : -m_stPlayerMove.m_fBlinkDistance) :
+                                startPosition.x + (IsRight() ? m_stPlayerMove.m_fBlinkDistance : -m_stPlayerMove.m_fBlinkDistance) :
                                 rayHitData.point.x,
                             startPosition.y,
                             startPosition.z);
@@ -108,15 +108,14 @@ public class Playermove : MonoBehaviour
                         //Clear Data Blink 직후 멈춰야함.
                         nowStatus &= ~CustomCharacterInfo.CHAR_STATUS.DASH_MOVE;
                         moveValue.prevValue = KeyCode.None;
-                        this.moveValue.moveWeight = 0;
+                        moveValue.moveWeight = 0;
 
-                        StartCoroutine(BlinkAnimation(startPosition, nextPosition, isRight));
+                        StartCoroutine(BlinkAnimation(startPosition, nextPosition, IsRight()));
                     }
                     else
                     {
                         this.transform.Translate(moveValue.moveWeight, 0, 0);
                     }
-                    weaponController.setAttackDirection(isRight);
                 }
 
                 if (this.IsStatus(CustomCharacterInfo.CHAR_STATUS.JUMP))
@@ -147,6 +146,11 @@ public class Playermove : MonoBehaviour
                 }
             }
         }
+    }
+
+    bool IsRight()
+    {
+        return this.gameObject.transform.localScale.x > 0;
     }
 
     void CheckAttack()
@@ -195,6 +199,7 @@ public class Playermove : MonoBehaviour
 
     void CheckMove()
     {
+        // 여기서 방향 전환을 구현하도록 한다.
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
             if (moveValue.prevValue == KeyCode.RightArrow && Time.time - moveValue.tDown < 0.5f)
