@@ -61,7 +61,6 @@ public class Playermove : MonoBehaviour
     {
         if(IsStatus(CustomCharacterInfo.CHAR_STATUS.HOLD) == false)
         {
-            Debug.Log("Check");
             CheckAttack();
             CheckJump();
             CheckMove();
@@ -313,6 +312,16 @@ public class Playermove : MonoBehaviour
     {
         animator.runtimeAnimatorController = Resources.Load(m_stPlayerMove.m_sPlayerSpritePath) as RuntimeAnimatorController;
         capsuleCollider2D.size = m_stPlayerMove.m_v2CharacterColliderArea;
+    }
+
+    public string GetanimatorPath()
+    {
+        return m_stPlayerMove.m_sPlayerSpritePath;
+    }
+
+    public Vector2 GetCollisionArea()
+    {
+        return m_stPlayerMove.m_v2CharacterColliderArea;
     }
 
 
