@@ -88,14 +88,17 @@ namespace DefinitionChar
         public enum CHAR_STATUS
         {
             NULL = 0, // 아무것도 안함.
-            DEAD = 1, //피격
-            HIT = 2, //사망
-            JUMP = 4, //점프
-            RAVITATE = 8, //Ravitate 마법사전용
-            ATTACK = 16, // 공격
-            MOVE = 32, //이동
-            DASH_MOVE = 64, // 대시
-            SKILL = 128 //스킬
+            GROUND = 2, // 땅에 붙어있음.
+            INVINCIBILITY = 4, // 무적
+            HOLD = 8, //입력키 제한.
+            DEAD = 16, //피격
+            HIT = 32, //사망
+            JUMP = 64, //점프
+            RAVITATE = 128, //Ravitate 마법사전용
+            ATTACK = 256, // 공격
+            MOVE = 512, //이동
+            DASH_MOVE = 1024, // 대시
+            SKILL = 2048 //스킬
         }
 
         public static Dictionary<CHAR_TYPE, CharaterInfo> CHAR_GLOBAL_DEFAULT_DATA;

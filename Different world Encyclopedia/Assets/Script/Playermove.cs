@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using DefinitionChar;
 using System.Collections;
+using System;
 
 public class Playermove : MonoBehaviour
 {
@@ -21,7 +22,6 @@ public class Playermove : MonoBehaviour
     private int jumpcount = 1;
     private bool isBlink = false;
     private bool isRavitate = false;
-    private bool isGrounded = false;
     private CustomCharacterInfo.CHAR_STATUS nowStatus = CustomCharacterInfo.CHAR_STATUS.NULL;
 
     private MoveFlag moveValue;
@@ -59,10 +59,14 @@ public class Playermove : MonoBehaviour
 
     void Update()
     {
-        CheckAttack();
-        CheckJump();
-        CheckMove();
-        CheckRavitate();
+        if(IsStatus(CustomCharacterInfo.CHAR_STATUS.HOLD) == false)
+        {
+            Debug.Log("Check");
+            CheckAttack();
+            CheckJump();
+            CheckMove();
+            CheckRavitate();
+        }
     }
 
     void FixedUpdate()
@@ -148,7 +152,7 @@ public class Playermove : MonoBehaviour
         }
     }
 
-    bool IsRight()
+    public bool IsRight()
     {
         return this.gameObject.transform.localScale.x > 0;
     }
@@ -184,17 +188,14 @@ public class Playermove : MonoBehaviour
 
     void CheckJump()
     {
-
         // 점프한다
         if (Input.GetKeyDown(KeyCode.X) && jumpcount > 0)
         {
-            Debug.Log("JUMP");
-            isGrounded = false;
+            nowStatus &= ~CustomCharacterInfo.CHAR_STATUS.GROUND;
             nowStatus |= CustomCharacterInfo.CHAR_STATUS.JUMP;
             jumpcount--;
             raviValue.tDown = Time.time;
         }
-
     }
 
     void CheckMove()
@@ -250,13 +251,21 @@ public class Playermove : MonoBehaviour
                 if (nowTile == TileType.GROUND ||
                     nowTile == TileType.FLOAT_GROUND)
                 {
-                    isGrounded = true;
+                    nowStatus |= CustomCharacterInfo.CHAR_STATUS.GROUND;
                     jumpcount = m_stPlayerMove.m_iJumpCount;
                 }
                 break;
             case "Monster":
+                if(IsStatus(CustomCharacterInfo.CHAR_STATUS.INVINCIBILITY) == false)
+                {
+                    //무적인경우 피해 충돌 ㄴㄴ해
+                }
                 break;
             case "Trap":
+                if (IsStatus(CustomCharacterInfo.CHAR_STATUS.INVINCIBILITY) == false)
+                {
+                    //무적인경우 피해 충돌 ㄴㄴ해
+                }
                 break;
         }
     }
@@ -264,7 +273,7 @@ public class Playermove : MonoBehaviour
     public bool IsPossibleCharaterChange()
     {
         //땅에있으면서 공격 가능할때 캐릭변경가능 공격도중 캐릭변경 ㄴㄴ해
-        return isGrounded && weaponController.CanAttackMotion();
+        return IsStatus(CustomCharacterInfo.CHAR_STATUS.GROUND) && weaponController.CanAttackMotion();
     }
 
     bool IsStatus(CustomCharacterInfo.CHAR_STATUS argStat)
@@ -331,6 +340,40 @@ public class Playermove : MonoBehaviour
         }
     }
 
+    //무적 설정
+    public void SetInvInvincibility()
+    {
+        nowStatus |= CustomCharacterInfo.CHAR_STATUS.INVINCIBILITY;
+    }
+
+    public void ReleaseInvincibility()
+    {
+        nowStatus &= ~CustomCharacterInfo.CHAR_STATUS.INVINCIBILITY;
+    }
+
+    //Hold 설정
+    public void SetHold()
+    {
+        nowStatus |= CustomCharacterInfo.CHAR_STATUS.HOLD;
+    }
+
+    public void ReleaseHold()
+    {
+        nowStatus &= ~CustomCharacterInfo.CHAR_STATUS.HOLD;
+    }
+
+    public void ResetCharacterInfo()
+    {
+        //모든 상태 전부 해제.
+        foreach (CustomCharacterInfo.CHAR_STATUS eachStatus in (CustomCharacterInfo.CHAR_STATUS[])Enum.GetValues(typeof(CustomCharacterInfo.CHAR_STATUS)))
+        {
+            nowStatus &= ~eachStatus;
+        }
+        //모든 플래그 전부 초기화.
+        raviValue = new RavitateFlag();
+        moveValue = new MoveFlag();
+    }
+
     public void setCharacterType(CustomCharacterInfo.CHAR_TYPE argType)
     {
         selectedCharacterType = argType;
@@ -358,7 +401,7 @@ public class Playermove : MonoBehaviour
             blinkObject.transform.localScale = new Vector3(isRight ? 1 : -1, 1, 1);
             blinkObject.GetComponent<SpriteRenderer>().material.color = setColor;
             yield return null;//new WaitForSeconds(eachDuration);
-            Object.Destroy(blinkObject, eachDuration);
+            Destroy(blinkObject, eachDuration);
         }
     }
 }
