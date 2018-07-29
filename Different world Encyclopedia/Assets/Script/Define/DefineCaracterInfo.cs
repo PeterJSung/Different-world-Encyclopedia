@@ -88,14 +88,17 @@ namespace DefinitionChar
         public enum CHAR_STATUS
         {
             NULL = 0, // 아무것도 안함.
-            DEAD = 1, //피격
-            HIT = 2, //사망
-            JUMP = 4, //점프
-            RAVITATE = 8, //Ravitate 마법사전용
-            ATTACK = 16, // 공격
-            MOVE = 32, //이동
-            DASH_MOVE = 64, // 대시
-            SKILL = 128 //스킬
+            GROUND = 2, // 땅에 붙어있음.
+            INVINCIBILITY = 4, // 무적
+            HOLD = 8, //입력키 제한.
+            DEAD = 16, //피격
+            HIT = 32, //사망
+            JUMP = 64, //점프
+            RAVITATE = 128, //Ravitate 마법사전용
+            ATTACK = 256, // 공격
+            MOVE = 512, //이동
+            DASH_MOVE = 1024, // 대시
+            SKILL = 2048 //스킬
         }
 
         public static Dictionary<CHAR_TYPE, CharaterInfo> CHAR_GLOBAL_DEFAULT_DATA;
@@ -132,6 +135,7 @@ namespace DefinitionChar
                     ret.m_sPlaerWeapon.m_sWaeponSpritePath = "Character/Alligator/Merona";
                     ret.m_sPlaerWeapon.m_sWaeponEffectPath = "Character/Common/Swing";
 
+                    ret.m_sPlayerMove.m_fJumpForce = 400.0f;
                     ret.m_sPlayerMove.m_v2CharacterColliderArea = new Vector2(0.45f, 0.58f);
                     ret.m_sPlayerMove.m_iJumpCount = 2;
                     ret.m_sPlayerMove.m_bIsBlink = false;
@@ -158,6 +162,7 @@ namespace DefinitionChar
                     ret.m_sPlaerWeapon.m_sWaeponSpritePath = "Character/Magition/Stick";
                     ret.m_sPlaerWeapon.m_sWaeponEffectPath = "Character/Magition/MagicFildRed";
 
+                    ret.m_sPlayerMove.m_fJumpForce = 300.0f;
                     ret.m_sPlayerMove.m_v2CharacterColliderArea = new Vector2(0.45f, 0.70f);
                     ret.m_sPlayerMove.m_iJumpCount = 1;
                     ret.m_sPlayerMove.m_bIsBlink = false;
@@ -184,14 +189,15 @@ namespace DefinitionChar
                     ret.m_sPlaerWeapon.m_sWaeponSpritePath = "Character/Dragon/Axe";
                     ret.m_sPlaerWeapon.m_sWaeponEffectPath = "Character/Common/Swing";
 
+                    ret.m_sPlayerMove.m_fJumpForce = 400.0f;
                     ret.m_sPlayerMove.m_v2CharacterColliderArea = new Vector2(0.45f, 0.70f);
                     ret.m_sPlayerMove.m_iJumpCount = 1;
                     ret.m_sPlayerMove.m_bIsBlink = true;
                     ret.m_sPlayerMove.m_bIsEnableRavitate = false;
                     ret.m_sPlayerMove.m_sPlayerSpritePath = "Anim/Player/DragonH_0";
-                    ret.m_sPlayerMove.m_fBlinkDistance = 3.0f;
-                    ret.m_sPlayerMove.m_fBlinkDuration = 1.0f;
-                    ret.m_sPlayerMove.m_iBlinkStep = 7;
+                    ret.m_sPlayerMove.m_fBlinkDistance = 1.5f;
+                    ret.m_sPlayerMove.m_fBlinkDuration = 0.8f;
+                    ret.m_sPlayerMove.m_iBlinkStep = 5;
                     break;
                 case CHAR_TYPE.HERO:
                     ret.m_sPlaerWeapon.m_fWeaponAxisStart = 20.0f;
@@ -211,6 +217,7 @@ namespace DefinitionChar
                     ret.m_sPlaerWeapon.m_sWaeponSpritePath = "Character/Hero/sword";
                     ret.m_sPlaerWeapon.m_sWaeponEffectPath = "Character/Common/Swing";
 
+                    ret.m_sPlayerMove.m_fJumpForce = 400.0f;
                     ret.m_sPlayerMove.m_v2CharacterColliderArea = new Vector2(0.45f, 0.75f);
                     ret.m_sPlayerMove.m_iJumpCount = 1;
                     ret.m_sPlayerMove.m_bIsBlink = false;
@@ -220,7 +227,7 @@ namespace DefinitionChar
             }
             ret.m_sPlayerMove.m_fDashMoveWeight = 0.06f;
             ret.m_sPlayerMove.m_fMoveWeight = 0.03f;
-            ret.m_sPlayerMove.m_fJumpForce = 400.0f;
+            
             return ret;
         }
 

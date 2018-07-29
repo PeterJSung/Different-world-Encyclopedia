@@ -1,10 +1,12 @@
 ﻿using UnityEngine;
 using DefinitionChar;
+using System.Collections;
+using System;
 
 public class Playermove : MonoBehaviour
 {
     private CharaterInfo currentCharInfo;
-    // private PlayerSkill skillController = null;
+    private PlayerSkill skillController = null;
     private PlayerMoveData m_stPlayerMove;
     private CustomCharacterInfo.CHAR_TYPE selectedCharacterType;
     public GameObject weaponObject;
@@ -20,7 +22,6 @@ public class Playermove : MonoBehaviour
     private int jumpcount = 1;
     private bool isBlink = false;
     private bool isRavitate = false;
-    private bool isGrounded = false;
     private CustomCharacterInfo.CHAR_STATUS nowStatus = CustomCharacterInfo.CHAR_STATUS.NULL;
 
     private MoveFlag moveValue;
@@ -30,7 +31,7 @@ public class Playermove : MonoBehaviour
     private Weapon weaponController = null;
 
     private RavitateFlag raviValue;
-
+    private GameObject blinkPrefab = null;
 
     void Awake()
     {
@@ -40,7 +41,9 @@ public class Playermove : MonoBehaviour
         raviValue = new RavitateFlag();
         this.rigid2D = GetComponent<Rigidbody2D>();
         weaponController = weaponObject.GetComponent<Weapon>();
-        //skillController = gameObject.GetComponent<PlayerSkill>();
+        weaponController.setAttackDirection(IsRight);
+
+        blinkPrefab = Resources.Load("Prefabs/BlinkObject") as GameObject;
     }
 
     void Start()
@@ -56,19 +59,19 @@ public class Playermove : MonoBehaviour
 
     void Update()
     {
-        CheckAttack();
-        CheckJump();
-        CheckMove();
-        CheckRavitate();
-
-
+        if(IsStatus(CustomCharacterInfo.CHAR_STATUS.HOLD) == false)
+        {
+            CheckAttack();
+            CheckJump();
+            CheckMove();
+            CheckRavitate();
+        }
     }
 
     void FixedUpdate()
     {
         DoingAction();
     }
-
     void DoingAction()
     {
         if (this.IsStatus(CustomCharacterInfo.CHAR_STATUS.DEAD))
@@ -86,22 +89,36 @@ public class Playermove : MonoBehaviour
                 //나머지 3순위 이벤트 모두 동일
                 if (this.IsStatus(CustomCharacterInfo.CHAR_STATUS.MOVE) || this.IsStatus(CustomCharacterInfo.CHAR_STATUS.DASH_MOVE))
                 {
-                    bool isRight = this.moveValue.moveWeight > 0;
-                    transform.localScale = new Vector3(isRight ? 1 : -1, 1, 1);
+                    transform.localScale = new Vector3(this.moveValue.moveWeight > 0 ? 1 : -1, 1, 1);
                     //이동
-                    if (this.IsStatus(CustomCharacterInfo.CHAR_STATUS.DASH_MOVE) && selectedCharacterType == CustomCharacterInfo.CHAR_TYPE.DRAGON)
+                    if (isBlink && this.IsStatus(CustomCharacterInfo.CHAR_STATUS.DASH_MOVE))
                     {
-                        this.transform.Translate(this.moveValue.moveWeight > 0 ? 3.0f : -3.0f, 0, 0);
+                        RaycastHit2D rayHitData = Physics2D.Raycast(
+                            new Vector2(transform.position.x, transform.position.y),
+                            new Vector2(IsRight() ? 1 : -1, 0),
+                            m_stPlayerMove.m_fBlinkDistance, 1 << GlobalLayerMask.TERRIAN_MASK);
+                        bool canMaxBlink = rayHitData.collider ? false : true;
+                        Vector3 startPosition = gameObject.transform.position;
+                        Vector3 nextPosition = new Vector3(
+                            canMaxBlink ?
+                                startPosition.x + (IsRight() ? m_stPlayerMove.m_fBlinkDistance : -m_stPlayerMove.m_fBlinkDistance) :
+                                rayHitData.point.x,
+                            startPosition.y,
+                            startPosition.z);
+
                         //Blink Action
+                        this.transform.position = nextPosition;
+                        //Clear Data Blink 직후 멈춰야함.
                         nowStatus &= ~CustomCharacterInfo.CHAR_STATUS.DASH_MOVE;
                         moveValue.prevValue = KeyCode.None;
-                        this.moveValue.moveWeight = 0;
+                        moveValue.moveWeight = 0;
+
+                        StartCoroutine(BlinkAnimation(startPosition, nextPosition, IsRight()));
                     }
                     else
                     {
                         this.transform.Translate(moveValue.moveWeight, 0, 0);
                     }
-                    weaponController.setAttackDirection(isRight);
                 }
 
                 if (this.IsStatus(CustomCharacterInfo.CHAR_STATUS.JUMP))
@@ -111,7 +128,7 @@ public class Playermove : MonoBehaviour
                     nowStatus &= ~CustomCharacterInfo.CHAR_STATUS.JUMP;
                 }
 
-                if (selectedCharacterType == CustomCharacterInfo.CHAR_TYPE.MAGITION && IsStatus(CustomCharacterInfo.CHAR_STATUS.RAVITATE))
+                if (isRavitate && IsStatus(CustomCharacterInfo.CHAR_STATUS.RAVITATE))
                 {
                     float yVel = (rigid2D.velocity.y + Physics.gravity.y) * rigid2D.gravityScale;
                     //Howering
@@ -127,11 +144,16 @@ public class Playermove : MonoBehaviour
 
                 if (this.IsStatus(CustomCharacterInfo.CHAR_STATUS.SKILL))
                 {
-                    //  skillController.ActionSkill(selectedCharacterType);
+                    skillController.ActionSkill(selectedCharacterType);
                     // 스킬
                 }
             }
         }
+    }
+
+    public bool IsRight()
+    {
+        return this.gameObject.transform.localScale.x > 0;
     }
 
     void CheckAttack()
@@ -144,7 +166,7 @@ public class Playermove : MonoBehaviour
 
     void CheckRavitate()
     {
-        if (selectedCharacterType == CustomCharacterInfo.CHAR_TYPE.MAGITION)
+        if (isRavitate)
         {
             if (Input.GetKey(KeyCode.X))
             {
@@ -165,19 +187,19 @@ public class Playermove : MonoBehaviour
 
     void CheckJump()
     {
+        // 점프한다
         if (Input.GetKeyDown(KeyCode.X) && jumpcount > 0)
         {
-            Debug.Log("JUMP");
-            isGrounded = false;
+            nowStatus &= ~CustomCharacterInfo.CHAR_STATUS.GROUND;
             nowStatus |= CustomCharacterInfo.CHAR_STATUS.JUMP;
             jumpcount--;
             raviValue.tDown = Time.time;
         }
-
     }
 
     void CheckMove()
     {
+        // 여기서 방향 전환을 구현하도록 한다.
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
             if (moveValue.prevValue == KeyCode.RightArrow && Time.time - moveValue.tDown < 0.5f)
@@ -228,13 +250,21 @@ public class Playermove : MonoBehaviour
                 if (nowTile == TileType.GROUND ||
                     nowTile == TileType.FLOAT_GROUND)
                 {
-                    isGrounded = true;
+                    nowStatus |= CustomCharacterInfo.CHAR_STATUS.GROUND;
                     jumpcount = m_stPlayerMove.m_iJumpCount;
                 }
                 break;
             case "Monster":
+                if(IsStatus(CustomCharacterInfo.CHAR_STATUS.INVINCIBILITY) == false)
+                {
+                    //무적인경우 피해 충돌 ㄴㄴ해
+                }
                 break;
             case "Trap":
+                if (IsStatus(CustomCharacterInfo.CHAR_STATUS.INVINCIBILITY) == false)
+                {
+                    //무적인경우 피해 충돌 ㄴㄴ해
+                }
                 break;
         }
     }
@@ -242,7 +272,7 @@ public class Playermove : MonoBehaviour
     public bool IsPossibleCharaterChange()
     {
         //땅에있으면서 공격 가능할때 캐릭변경가능 공격도중 캐릭변경 ㄴㄴ해
-        return isGrounded && weaponController.CanAttackMotion();
+        return IsStatus(CustomCharacterInfo.CHAR_STATUS.GROUND) && weaponController.CanAttackMotion();
     }
 
     bool IsStatus(CustomCharacterInfo.CHAR_STATUS argStat)
@@ -284,6 +314,17 @@ public class Playermove : MonoBehaviour
         capsuleCollider2D.size = m_stPlayerMove.m_v2CharacterColliderArea;
     }
 
+    public string GetanimatorPath()
+    {
+        return m_stPlayerMove.m_sPlayerSpritePath;
+    }
+
+    public Vector2 GetCollisionArea()
+    {
+        return m_stPlayerMove.m_v2CharacterColliderArea;
+    }
+
+
     public class RavitateFlag
     {
         public float tDown;
@@ -308,9 +349,70 @@ public class Playermove : MonoBehaviour
         }
     }
 
+    //무적 설정
+    public void SetInvInvincibility()
+    {
+        nowStatus |= CustomCharacterInfo.CHAR_STATUS.INVINCIBILITY;
+    }
+
+    public void ReleaseInvincibility()
+    {
+        nowStatus &= ~CustomCharacterInfo.CHAR_STATUS.INVINCIBILITY;
+    }
+
+    //Hold 설정
+    public void SetHold()
+    {
+        nowStatus |= CustomCharacterInfo.CHAR_STATUS.HOLD;
+    }
+
+    public void ReleaseHold()
+    {
+        nowStatus &= ~CustomCharacterInfo.CHAR_STATUS.HOLD;
+    }
+
+    public void ResetCharacterInfo()
+    {
+        //모든 상태 전부 해제.
+        foreach (CustomCharacterInfo.CHAR_STATUS eachStatus in (CustomCharacterInfo.CHAR_STATUS[])Enum.GetValues(typeof(CustomCharacterInfo.CHAR_STATUS)))
+        {
+            nowStatus &= ~eachStatus;
+        }
+        //모든 플래그 전부 초기화.
+        raviValue = new RavitateFlag();
+        moveValue = new MoveFlag();
+
+        nowStatus |= CustomCharacterInfo.CHAR_STATUS.GROUND;
+    }
+
     public void setCharacterType(CustomCharacterInfo.CHAR_TYPE argType)
     {
         selectedCharacterType = argType;
         ReLoadingCharacter();
+    }
+
+    private IEnumerator BlinkAnimation(Vector3 startPosition, Vector3 nextPosition, bool isRight)
+    {
+        //잔상 단계는 총 5개 최종 위치를 포함한 총 포지션은 6개로 잡는다
+        //잔상 1 처음위치(0/5)  Alpha 20% 
+        //잔상 2 다음1(1/5) Alpha 40% 
+        //잔상 3 다음2(2/5) Alpha 60% 
+        //잔상 4 다음3(3/5) Alpha 80% 
+        //잔상 5 다음4(4/5) Alpha 100% 
+        //현재캐릭터(5/5) 종료위치
+
+        float eachDuration = m_stPlayerMove.m_fBlinkDuration / m_stPlayerMove.m_iBlinkStep;
+        float xMove = (nextPosition.x - startPosition.x) / m_stPlayerMove.m_iBlinkStep;
+        Color setColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+        for (int i = 0; i < m_stPlayerMove.m_iBlinkStep; i++)
+        {
+            GameObject blinkObject = MonoBehaviour.Instantiate(blinkPrefab) as GameObject;
+            setColor.a = (float)(i + 1) / m_stPlayerMove.m_iBlinkStep;
+            blinkObject.transform.position = new Vector3(startPosition.x + (xMove * i), startPosition.y, startPosition.z);
+            blinkObject.transform.localScale = new Vector3(isRight ? 1 : -1, 1, 1);
+            blinkObject.GetComponent<SpriteRenderer>().material.color = setColor;
+            yield return null;//new WaitForSeconds(eachDuration);
+            Destroy(blinkObject, eachDuration);
+        }
     }
 }

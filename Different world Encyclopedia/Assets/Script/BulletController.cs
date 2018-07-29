@@ -50,6 +50,13 @@ public class BulletController : MonoBehaviour
     void Start()
     {
         renderObj = gameObject.GetComponent<SpriteRenderer>();
+        if (currentBulletData != null && currentBulletData.GetStartSprite() != null)
+        {
+            StartCoroutine(StartAnimation());
+        } else
+        {
+            isStart = true;
+        }
     }
 
     // Update is called once per frame
@@ -66,6 +73,17 @@ public class BulletController : MonoBehaviour
             else
             {
                 //Check Sheeting area;
+                if(currentBulletData.sheetingsprite == null)
+                {
+                    Debug.Log("NULL");
+                } else
+                {
+                    if (currentBulletData.sheetingsprite[renderingIndex] == null)
+                    {
+                        Debug.Log("NULL INDEX" + renderingIndex);
+                    }
+                }
+
                 renderObj.sprite = currentBulletData.sheetingsprite[renderingIndex];
                 renderingIndex++;
                 if (renderingIndex == currentBulletData.sheetingsprite.Length)
@@ -76,7 +94,9 @@ public class BulletController : MonoBehaviour
                 {
                     case MOTION_TYPE.FLOAT:
                         time += Time.deltaTime;
-                        if( time > currentBulletData.GetFloattingTimimg())
+                        SetCurrentPostion();
+
+                        if ( time > currentBulletData.GetFloattingTimimg())
                         {
                             isEnd = true;
                         }
@@ -98,6 +118,34 @@ public class BulletController : MonoBehaviour
         }
     }
 
+    IEnumerator StartAnimation()
+    {
+        renderingIndex = 0;
+        Sprite[] startSprite = currentBulletData.GetStartSprite();
+        for(int i = 0; i < startSprite.Length; i++)
+        {
+            SetCurrentPostion();
+
+            renderObj.sprite = startSprite[renderingIndex];
+            renderingIndex++;
+            yield return null;
+        }
+        isStart = true;
+        renderingIndex = 0;
+    }
+
+    private void SetCurrentPostion()
+    {
+        if (currentBulletData.GetStandardPosition())
+        {
+            startPosition = new Vector3(
+            currentBulletData.GetStandardPosition().transform.position.x + (currentBulletData.GetIsRight() ? +0.6f : -0.6f),
+            currentBulletData.GetStandardPosition().transform.position.y,
+            currentBulletData.GetStandardPosition().transform.position.z);
+            gameObject.transform.position = startPosition;
+        }
+    }
+
     IEnumerator EndAnimation()
     {
         isStart = false;
@@ -109,6 +157,7 @@ public class BulletController : MonoBehaviour
         Sprite[] endSprite = currentBulletData.GetEndSprite();
         if (endSprite == null)
         {
+            //End Sprite 가 없을경우 Aplpha 값 변경으로 사라진다/
             float sTransValue = 1.0f;
             float eTransValue = 0.0f;
 
@@ -117,7 +166,7 @@ public class BulletController : MonoBehaviour
             while (time < currentBulletData.disapearTiming)
             {
                 time += Time.deltaTime / currentBulletData.disapearTiming;
-
+                
                 effectTransparent.a = Mathf.Lerp(sTransValue, eTransValue, time);
                 renderObj.material.color = effectTransparent;
                 yield return null;
@@ -125,19 +174,33 @@ public class BulletController : MonoBehaviour
         }
         else
         {
-            while (time < currentBulletData.disapearTiming)
+            if (currentBulletData.GetStartSprite() != null)
             {
-                time += Time.deltaTime / currentBulletData.disapearTiming;
-
-
-                renderObj.sprite = endSprite[renderingIndex];
-                renderingIndex++;
-                if (renderingIndex == endSprite.Length)
+                //End sprite 도 있고 strt Sprite 도 있는경우 대칭을위해 프레임단위로 랜더링ㅎ나다/.
+                for (int i = 0; i < endSprite.Length; i++)
                 {
-                    renderingIndex = 0;
+                    SetCurrentPostion();
+                    renderObj.sprite = endSprite[renderingIndex];
+                    renderingIndex++;
+                    yield return null;
                 }
+            }
+            else
+            {
+                while (time < currentBulletData.disapearTiming)
+                {
+                    time += Time.deltaTime / currentBulletData.disapearTiming;
 
-                yield return null;
+
+                    renderObj.sprite = endSprite[renderingIndex];
+                    renderingIndex++;
+                    if (renderingIndex == endSprite.Length)
+                    {
+                        renderingIndex = 0;
+                    }
+
+                    yield return null;
+                }
             }
         }
         Destroy(this.gameObject);
@@ -211,12 +274,23 @@ public class BulletController : MonoBehaviour
     {
         currentBulletData = argBulletData;
 
-        //시작지점이 현재지점임
-        startPosition = currentBulletData.startPosition;
+        //기준 Position이 있다면 해당 포지션으로 설정 아니면 걍 StartPosition 으로 설정
+        if (currentBulletData.GetStandardPosition())
+        {
+            startPosition = new Vector3(
+            currentBulletData.GetStandardPosition().transform.position.x + (currentBulletData.GetIsRight() ? +0.6f : -0.6f),
+            currentBulletData.GetStandardPosition().transform.position.y,
+            currentBulletData.GetStandardPosition().transform.position.z);
+        }
+        else
+        {
+            startPosition = currentBulletData.startPosition;
+        }
+        
         gameObject.transform.position = startPosition;
         currentTransForm = this.gameObject.transform;
         //데이터 세팅이 끝난 후 설정
         time = 0;
-        isStart = true;
+        
     }
 }

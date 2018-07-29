@@ -3,6 +3,8 @@ using UnityEngine;
 using DefinitionChar;
 using DefineDefaultAttack;
 
+public delegate bool IsRight();
+
 public class Weapon : MonoBehaviour
 {
     private bool canAttack = true;
@@ -22,7 +24,8 @@ public class Weapon : MonoBehaviour
     private SpriteRenderer renderObject = null;
 
     private PlayerDefaultBulletData currentBulletData;
-
+    
+    private IsRight rightFunctionPointer;
     private void OnTriggerStay2D(Collider2D other)
     {
         if (!canAttack)
@@ -70,7 +73,7 @@ public class Weapon : MonoBehaviour
             currentPlayerData.m_fAttackSpeed,
             currentPlayerData.m_fWeaponAxisStart,
             currentPlayerData.m_fWeaponAxisEnd,
-            isRight, 
+            rightFunctionPointer, 
             isHiitedList);
         ExtraAttackData argExtraData = new ExtraAttackData(currentBulletData.m_v2BulletSize);
         switch (currentPlayerType)
@@ -97,13 +100,12 @@ public class Weapon : MonoBehaviour
                 break;
         }
 
-
         canAttack = true;
     }
 
-    public void setAttackDirection(bool argIsRight)
+    public void setAttackDirection(IsRight argIsRight)
     {
-        isRight = argIsRight;
+        rightFunctionPointer = argIsRight;
     }
 
     public void setParameter(PlayerWeaponData argPlayerData,PlayerDefaultBulletData argBulletData ,CustomCharacterInfo.CHAR_TYPE argType)
