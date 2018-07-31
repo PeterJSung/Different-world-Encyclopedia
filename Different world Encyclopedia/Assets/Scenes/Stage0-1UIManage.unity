@@ -213,7 +213,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 724, y: -911.2}
+  m_AnchoredPosition: {x: 510.6, y: -678.69}
   m_SizeDelta: {x: 846.4, y: 120}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &137427528
@@ -235,7 +235,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 9e3d42df132deee4bb95a4a66aec2b7b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: a4bb684f21c380d489da0fbc40a7b58a, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1258,7 +1258,6 @@ GameObject:
   - component: {fileID: 916909022}
   - component: {fileID: 916909025}
   - component: {fileID: 916909024}
-  - component: {fileID: 916909023}
   m_Layer: 5
   m_Name: BossHpGage
   m_TagString: Untagged
@@ -1281,20 +1280,9 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 724, y: -920}
+  m_AnchoredPosition: {x: 510.6, y: -687.8}
   m_SizeDelta: {x: 612.5, y: 72.6}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &916909023
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 916909021}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f61764cde5a365044ab45f076a1db2a5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &916909024
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1314,7 +1302,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 7a0b188b6891a44418dbebaa1927ed17, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 6cd53ee002c8dc44dadb6ee1d8ff983d, type: 3}
   m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1852,7 +1840,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: efcf01d227aac9e4ab2789e60fd4efe6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectedCharactorType: 0
   weaponObject: {fileID: 1557541637}
 --- !u!50 &1305630895
 Rigidbody2D:
@@ -2175,15 +2162,15 @@ Camera:
   m_BackGroundColor: {r: 0.990566, g: 0.62144, b: 0.659124, a: 0}
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: 0.76
-    y: 0.42
-    width: 0.03
+    x: 0.79
+    y: 0.762
+    width: 0.2
     height: 0.2
   near clip plane: 0
   far clip plane: 10
   field of view: 60
   orthographic: 1
-  orthographic size: 12
+  orthographic size: 10
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
@@ -2376,7 +2363,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8035927aba24d87449ea29e90049ef91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponEffect: {fileID: 789996500}
 --- !u!61 &1557541640
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -6554,8 +6540,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 1220, y: -137.7}
-  m_SizeDelta: {x: 225.3, y: 241.27}
+  m_AnchoredPosition: {x: 910.4, y: -100.5}
+  m_SizeDelta: {x: 229.5, y: 188}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2036398582
 MonoBehaviour:
@@ -6576,7 +6562,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: fd253af116192e14fa628161ab4171c3, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 0d1dd32ffebd14346b9ee17477aea1f8, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
