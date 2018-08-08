@@ -8,11 +8,8 @@ public delegate bool IsRight();
 public class Weapon : MonoBehaviour
 {
     private bool canAttack = true;
-    private Transform parentsObject = null;
-
-    private bool isRight = true;
-
-    private CustomCharacterInfo.CHAR_TYPE currentPlayerType;
+    
+    private GlobalCharacterInfo.CHAR_TYPE currentPlayerType;
 
 
     ArrayList isHiitedList = new ArrayList();
@@ -78,22 +75,22 @@ public class Weapon : MonoBehaviour
         ExtraAttackData argExtraData = new ExtraAttackData(currentBulletData.m_v2BulletSize);
         switch (currentPlayerType)
         {
-            case CustomCharacterInfo.CHAR_TYPE.ALLIGATOR:
+            case GlobalCharacterInfo.CHAR_TYPE.ALLIGATOR:
                 yield return StartCoroutine(attackController.AlligatoerAttack(
                     argDefaultData,
                     argExtraData));
                 break;
-            case CustomCharacterInfo.CHAR_TYPE.MAGITION:
+            case GlobalCharacterInfo.CHAR_TYPE.MAGITION:
                 yield return StartCoroutine(attackController.MagitionAttack(
                     argDefaultData,
                     argExtraData));
                 break;
-            case CustomCharacterInfo.CHAR_TYPE.DRAGON:
+            case GlobalCharacterInfo.CHAR_TYPE.DRAGON:
                 yield return StartCoroutine(attackController.DragonAttack(
                     argDefaultData,
                     argExtraData));
                 break;
-            case CustomCharacterInfo.CHAR_TYPE.HERO:
+            case GlobalCharacterInfo.CHAR_TYPE.HERO:
                 yield return StartCoroutine(attackController.HeroAttack(
                     argDefaultData,
                     argExtraData));
@@ -108,7 +105,7 @@ public class Weapon : MonoBehaviour
         rightFunctionPointer = argIsRight;
     }
 
-    public void setParameter(PlayerWeaponData argPlayerData,PlayerDefaultBulletData argBulletData ,CustomCharacterInfo.CHAR_TYPE argType)
+    public void setParameter(PlayerWeaponData argPlayerData,PlayerDefaultBulletData argBulletData ,GlobalCharacterInfo.CHAR_TYPE argType)
     {
         currentPlayerData = argPlayerData;
         currentBulletData = argBulletData;
@@ -134,7 +131,6 @@ public class Weapon : MonoBehaviour
 
     void InitializeWeapon()
     {
-        parentsObject = this.transform.parent.transform;
         attackController = gameObject.GetComponent<PlayerAttackController>();
         weaponBoxCollider2D = gameObject.GetComponent<BoxCollider2D>();
         renderObject = gameObject.GetComponent<SpriteRenderer>();

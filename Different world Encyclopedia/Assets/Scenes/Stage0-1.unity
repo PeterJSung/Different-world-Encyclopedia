@@ -620,6 +620,7 @@ GameObject:
   - component: {fileID: 262383705}
   - component: {fileID: 262383707}
   - component: {fileID: 262383706}
+  - component: {fileID: 262383708}
   m_Layer: 11
   m_Name: Character
   m_TagString: Untagged
@@ -751,6 +752,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weaponObject: {fileID: 2002655311}
+--- !u!114 &262383708
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 262383701}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc56d12eaa9cd0c4db005779cfd6d612, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &278126925
 GameObject:
   m_ObjectHideFlags: 0
@@ -1978,6 +1990,11 @@ Prefab:
     - target: {fileID: 1333999711384892, guid: 0052bc0392da1f94996d11b58590c2ee, type: 2}
       propertyPath: m_Layer
       value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 61846273438870558, guid: 0052bc0392da1f94996d11b58590c2ee,
+        type: 2}
+      propertyPath: m_IsTrigger
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 0052bc0392da1f94996d11b58590c2ee, type: 2}

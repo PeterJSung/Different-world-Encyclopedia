@@ -67,7 +67,7 @@ namespace DefinitionChar
         }
     }
 
-    public static class CustomCharacterInfo
+    public static class GlobalCharacterInfo
     {
         public enum CHAR_TYPE
         {
@@ -103,7 +103,7 @@ namespace DefinitionChar
 
         public static Dictionary<CHAR_TYPE, CharaterInfo> CHAR_GLOBAL_DEFAULT_DATA;
 
-        static CustomCharacterInfo()
+        static GlobalCharacterInfo()
         {
             CHAR_GLOBAL_DEFAULT_DATA = new Dictionary<CHAR_TYPE, CharaterInfo>();
             CHAR_GLOBAL_DEFAULT_DATA.Add(CHAR_TYPE.ALLIGATOR, generateDefaultCharInfo(CHAR_TYPE.ALLIGATOR));
