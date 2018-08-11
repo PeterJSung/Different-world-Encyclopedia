@@ -4,19 +4,23 @@ using UnityEngine;
 using DefinitionChar;
 using DefineSkill;
 
+using DragonActionModel;
+
 public class PlayerSkill : MonoBehaviour
 {
-    Sprite[] magitionMagicCircleSrite = null;
-    Sprite[] magitionHandsSprite = null;
+    private Sprite[] magitionMagicCircleSrite = null;
+    private Sprite[] magitionHandsSprite = null;
 
-    Sprite[] dragonSparkSprite = null;
-    Sprite[] dragonLaserSprite = null;
+    private Sprite[] dragonSparkSprite = null;
+    private Sprite[] dragonLaserSprite = null;
 
     private bool duringSkill = false;
 
     private Playermove moveScript = null;
     private SkillInfo defaultSkillInfo = null;
-    GameObject prefab = null;
+
+    private GameObject dragonBreathPrefab;
+
     void Awake()
     {
         magitionMagicCircleSrite = Resources.LoadAll<Sprite>("Character/Magition/SkillDevillHand/Circle");
@@ -26,7 +30,8 @@ public class PlayerSkill : MonoBehaviour
         dragonLaserSprite = Resources.LoadAll<Sprite>("Character/Dragon/SkillLaserShoot/Laser");
 
         moveScript = gameObject.GetComponent<Playermove>();
-        prefab = Resources.Load("Prefabs/BulletDefaultAttack") as GameObject;
+
+        dragonBreathPrefab = Resources.Load("Prefabs/Dragon/Breath") as GameObject;
     }
 
     // Use this for initialization
@@ -88,6 +93,23 @@ public class PlayerSkill : MonoBehaviour
 
     private IEnumerator DragonSkill()
     {
+        GameObject breathObject = MonoBehaviour.Instantiate(dragonBreathPrefab) as GameObject;
+        DragonSkillModel skillModel = new DragonSkillModel();
+        skillModel.appreanceFrame = defaultSkillInfo.m_sSkillBullet.dragonSkill.eachDuration;
+        skillModel.gapFrame = defaultSkillInfo.m_sSkillBullet.dragonSkill.gapDuration;
+        skillModel.isRight = moveScript.IsRight();
+        skillModel.sheetingFrame = defaultSkillInfo.m_sSkillBullet.dragonSkill.eachDuration;
+        skillModel.sheetingSprite = dragonLaserSprite;
+        skillModel.sheetingSpriteStart = dragonSparkSprite;
+        skillModel.stretchYMax = defaultSkillInfo.m_sSkillBullet.dragonSkill.laserYArea;
+        skillModel.stretchYMin = defaultSkillInfo.m_sSkillBullet.dragonSkill.sparkYArea;
+        skillModel.targetArray = new ArrayList();
+        skillModel.targetArray.Add(GlobalLayerMask.ENEMY_MASK); ;
+
+
+        BreathScript firballScript = breathObject.GetComponent<BreathScript>();
+        firballScript.SetParameter(skillModel);
+        yield return new WaitForSeconds(1.0f);
         /*
         // 이번 공격 형식은 모두 Float 형식임.
 

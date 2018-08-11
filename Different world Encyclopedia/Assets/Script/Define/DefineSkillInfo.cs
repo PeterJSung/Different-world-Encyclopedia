@@ -14,9 +14,9 @@ namespace DefineSkill
     {
         public float eachDuration;
         public float gapDuration;
-        public Vector2 sparkArea;
-        public Vector2 laserArea;
-        public Vector2 offset;
+        public float sparkYArea;
+        public float laserYArea;
+        //public Vector2 offset;
     }
 
     public struct Magition
@@ -78,11 +78,11 @@ namespace DefineSkill
                     ret.m_sSkillBullet.magitionSkill.lastArea = new Vector2(15.0f, 1.0f);
                     break;
                 case GlobalCharacterInfo.CHAR_TYPE.DRAGON:
-                    ret.m_sSkillBullet.dragonSkill.sparkArea = new Vector2(10.0f, 0.2f);
-                    ret.m_sSkillBullet.dragonSkill.laserArea = new Vector2(10.0f, 0.8f);
-                    ret.m_sSkillBullet.dragonSkill.offset = new Vector2(ret.m_sSkillBullet.dragonSkill.sparkArea.x / 2, 0.0f);
-                    ret.m_sSkillBullet.dragonSkill.eachDuration = 0.3f;
-                    ret.m_sSkillBullet.dragonSkill.gapDuration = 0.1f;
+                    ret.m_sSkillBullet.dragonSkill.sparkYArea = 0.1f;
+                    ret.m_sSkillBullet.dragonSkill.laserYArea = 1.0f;
+                    //ret.m_sSkillBullet.dragonSkill.offset = new Vector2(ret.m_sSkillBullet.dragonSkill.sparkArea.x / 2, 0.0f);
+                    ret.m_sSkillBullet.dragonSkill.eachDuration = 1000.0f;
+                    ret.m_sSkillBullet.dragonSkill.gapDuration = 1000.0f;
                     break;
                 case GlobalCharacterInfo.CHAR_TYPE.HERO:
                     // Skill 이 없으므로 해당 데이터 설정하지 않는다.
