@@ -82,7 +82,10 @@ public class Playermove : MonoBehaviour
 
     void FixedUpdate()
     {
-        DoingAction();
+        if (IsStatus(GlobalCharacterInfo.CHAR_STATUS.HOLD) == false)
+        {
+            DoingAction();
+        }
     }
     void DoingAction()
     {
@@ -167,6 +170,16 @@ public class Playermove : MonoBehaviour
     public bool IsRight()
     {
         return this.gameObject.transform.localScale.x > 0;
+    }
+
+    public Vector3 GetCurrentPostion()
+    {
+        return gameObject.transform.position;
+    }
+
+    public Vector2 GetCurrentSize()
+    {
+        return new Vector2(capsuleCollider2D.size.x * this.gameObject.transform.localScale.x, capsuleCollider2D.size.y * this.gameObject.transform.localScale.y);
     }
 
     void CheckAttack()

@@ -28,6 +28,23 @@ namespace MagitionActionModel
 
     public class MagitionSkillModel
     {
+        public Sprite[] magicCircleSprite;
+        public Sprite[] devilHandsSprite;
 
+        public ArrayList targetArray;
+
+        public bool isRight;
+
+        public Vector2 startPostion;
+        public Vector2 endPostion;
+
+        public float handsDegree;
+
+        public int handsCount;
+        public float offsetRandomDistMax;
+        public float offsetRandomDegMax;
+
+        public Vector2 firstArea;
+        public Vector2 lastArea;
     }
 }

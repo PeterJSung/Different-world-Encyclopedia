@@ -20,6 +20,7 @@ public class PlayerSkill : MonoBehaviour
     private SkillInfo defaultSkillInfo = null;
 
     private GameObject dragonBreathPrefab;
+    private GameObject magitionDevilHandsPrefab;
 
     void Awake()
     {
@@ -32,6 +33,7 @@ public class PlayerSkill : MonoBehaviour
         moveScript = gameObject.GetComponent<Playermove>();
 
         dragonBreathPrefab = Resources.Load("Prefabs/Dragon/Breath") as GameObject;
+        magitionDevilHandsPrefab = Resources.Load("Prefabs/Magition/DevilHands") as GameObject;
     }
 
     // Use this for initialization
@@ -85,6 +87,8 @@ public class PlayerSkill : MonoBehaviour
 
     private IEnumerator MagitionSkill()
     {
+        GameObject magicHandsObject = MonoBehaviour.Instantiate(magitionDevilHandsPrefab) as GameObject;
+
         yield return null;
         moveScript.ReleaseInvincibility();
         moveScript.ReleaseHold();
@@ -106,72 +110,25 @@ public class PlayerSkill : MonoBehaviour
         skillModel.targetArray = new ArrayList();
         skillModel.targetArray.Add(GlobalLayerMask.ENEMY_MASK); ;
 
+        
+        float offsetValue = breathObject.GetComponent<CapsuleCollider2D>().size.x / 2 * breathObject.transform.localScale.x;
+        float charSizeX = moveScript.GetCurrentSize().x;
+
+        breathObject.transform.position = new Vector3(
+            moveScript.GetCurrentPostion().x + (moveScript.IsRight()? offsetValue : -offsetValue) + charSizeX,
+            moveScript.GetCurrentPostion().y,
+            moveScript.GetCurrentPostion().z);
+
+        breathObject.transform.localScale = new Vector3(moveScript.IsRight() ? 1 : -1, 1, 1);
 
         BreathScript breathScript = breathObject.GetComponent<BreathScript>();
         breathScript.SetParameter(skillModel);
         yield return new WaitUntil(() => breathScript.EndSkill() == true);
         Destroy(breathObject);
-        /*
-        // 이번 공격 형식은 모두 Float 형식임.
-
-        BulletDataFloatType floatData = new BulletDataFloatType();
-        floatData.tLayer = new ArrayList();
-        floatData.tLayer.Add(GlobalLayerMask.ENEMY_MASK);
-
-        floatData.motion = MOTION_TYPE.FLOAT;
-        floatData.rightCheckFunction = moveScript.IsRight;
-        
-
-
-        // Spark 공격
-        GameObject bulletObject = MonoBehaviour.Instantiate(prefab) as GameObject;
-        bulletObject.GetComponent<CapsuleCollider2D>().size = defaultSkillInfo.m_sSkillBullet.dragonSkill.sparkArea;
-        bulletObject.GetComponent<CapsuleCollider2D>().offset = defaultSkillInfo.m_sSkillBullet.dragonSkill.offset;
-
-        bulletObject.transform.position = new Vector3(gameObject.transform.position.x + (moveScript.IsRight() == true ? +0.2f : -0.2f),
-            gameObject.transform.position.y, 
-            gameObject.transform.position.z);
-        bulletObject.transform.localScale = new Vector3(moveScript.IsRight() ? bulletObject.transform.localScale.x : -bulletObject.transform.localScale.x,
-            bulletObject.transform.localScale.y,
-            bulletObject.transform.localScale.z);
-
-
-
-        SpriteRenderer renderObj = bulletObject.GetComponent<SpriteRenderer>();
-        for (int i = 0; i < dragonSparkSprite.Length; i++)
-        {
-            renderObj.sprite = dragonSparkSprite[i];
-            yield return new WaitForSeconds(defaultSkillInfo.m_sSkillBullet.dragonSkill.eachDuration);
-        }
-        Destroy(bulletObject);
-        yield return new WaitForSeconds(defaultSkillInfo.m_sSkillBullet.dragonSkill.gapDuration);
-
-        bulletObject = MonoBehaviour.Instantiate(prefab) as GameObject;
-        bulletObject.GetComponent<CapsuleCollider2D>().size = defaultSkillInfo.m_sSkillBullet.dragonSkill.laserArea;
-        bulletObject.GetComponent<CapsuleCollider2D>().offset = defaultSkillInfo.m_sSkillBullet.dragonSkill.offset;
-
-        bulletObject.transform.position = new Vector3(gameObject.transform.position.x + (moveScript.IsRight() == true ? +0.2f : -0.2f),
-            gameObject.transform.position.y,
-            gameObject.transform.position.z);
-        bulletObject.transform.localScale = new Vector3(moveScript.IsRight() ? bulletObject.transform.localScale.x : -bulletObject.transform.localScale.x,
-            bulletObject.transform.localScale.y,
-            bulletObject.transform.localScale.z);
-
-        for (int i = 0; i < dragonLaserSprite.Length; i++)
-        {
-            renderObj.sprite = dragonLaserSprite[i];
-            yield return new WaitForSeconds(defaultSkillInfo.m_sSkillBullet.dragonSkill.eachDuration);
-        }
-        Destroy(bulletObject);
-
-        yield return new WaitForSeconds(defaultSkillInfo.m_sSkillBullet.dragonSkill.gapDuration);
-        */
-
-        yield return null;
+       
         moveScript.ReleaseInvincibility();
         moveScript.ReleaseHold();
         duringSkill = false;
-        
     }
 
     private IEnumerator HeroSkill()
