@@ -107,9 +107,10 @@ public class PlayerSkill : MonoBehaviour
         skillModel.targetArray.Add(GlobalLayerMask.ENEMY_MASK); ;
 
 
-        BreathScript firballScript = breathObject.GetComponent<BreathScript>();
-        firballScript.SetParameter(skillModel);
-        yield return new WaitForSeconds(1.0f);
+        BreathScript breathScript = breathObject.GetComponent<BreathScript>();
+        breathScript.SetParameter(skillModel);
+        yield return new WaitUntil(() => breathScript.EndSkill() == true);
+        Destroy(breathObject);
         /*
         // 이번 공격 형식은 모두 Float 형식임.
 

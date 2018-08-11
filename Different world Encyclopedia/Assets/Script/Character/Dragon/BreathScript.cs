@@ -11,6 +11,8 @@ public class BreathScript : MonoBehaviour
     CapsuleCollider2D colliderController = null;
     // Use this for initialization
 
+    bool duringAnimation = false;
+
     enum BREATH_STATUS
     {
         NONE = 0, //NOT READY,
@@ -51,19 +53,26 @@ public class BreathScript : MonoBehaviour
         switch (currentStat)
         {
             case BREATH_STATUS.SHEETITING_START:
-                StartCoroutine(SparkAnimation());
+                if (!duringAnimation)
+                {
+                    StartCoroutine(SparkAnimation());
+                }
                 break;
             case BREATH_STATUS.SHEETITING_END:
-                StartCoroutine(EndAnimation());
+                if (!duringAnimation)
+                {
+                    StartCoroutine(LaserAnimation());
+                }
                 break;
             case BREATH_STATUS.DESTROY:
-                Destroy(this.gameObject);
+                endSkill = true;
                 break;
         }
     }
 
     private IEnumerator SparkAnimation()
     {
+        duringAnimation = true;
         Sprite[] targetSprite = skillModel.sheetingSpriteStart;
 
         int maxLength = targetSprite.Length;
@@ -76,20 +85,20 @@ public class BreathScript : MonoBehaviour
         colliderController.size = new Vector2(colliderController.size.x, startYValue);
         while (renderIndex < maxLength)
         {
-            Debug.Log(renderIndex  + " " + targetSprite[renderIndex].name);
             rendererController.sprite = targetSprite[renderIndex];
             renderIndex++;
             yield return new WaitForSeconds(frameTime);
         }
-
+        rendererController.sprite = null;
         yield return new WaitForSeconds(gapTime);
         currentStat = BREATH_STATUS.SHEETITING_END;
+        duringAnimation = false;
     }
 
-    private IEnumerator EndAnimation()
+    private IEnumerator LaserAnimation()
     {
+        duringAnimation = true;
         Sprite[] targetSprite = skillModel.sheetingSprite;
-
         int maxLength = targetSprite.Length;
         float frameTime = skillModel.sheetingFrame / 1000;
         int renderIndex = 0;
@@ -99,13 +108,12 @@ public class BreathScript : MonoBehaviour
         colliderController.size = new Vector2(colliderController.size.x, startYValue);
         while (renderIndex < maxLength)
         {
-            Debug.Log(renderIndex + " " + targetSprite[renderIndex].name);
             rendererController.sprite = targetSprite[renderIndex];
             renderIndex++;
             yield return new WaitForSeconds(frameTime);
         }
-        endSkill = true;
         currentStat = BREATH_STATUS.DESTROY;
+        duringAnimation = false;
     }
 
     public bool EndSkill()

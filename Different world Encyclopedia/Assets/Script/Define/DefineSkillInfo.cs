@@ -81,8 +81,8 @@ namespace DefineSkill
                     ret.m_sSkillBullet.dragonSkill.sparkYArea = 0.1f;
                     ret.m_sSkillBullet.dragonSkill.laserYArea = 1.0f;
                     //ret.m_sSkillBullet.dragonSkill.offset = new Vector2(ret.m_sSkillBullet.dragonSkill.sparkArea.x / 2, 0.0f);
-                    ret.m_sSkillBullet.dragonSkill.eachDuration = 1000.0f;
-                    ret.m_sSkillBullet.dragonSkill.gapDuration = 1000.0f;
+                    ret.m_sSkillBullet.dragonSkill.eachDuration = 100.0f;
+                    ret.m_sSkillBullet.dragonSkill.gapDuration = 200.0f;
                     break;
                 case GlobalCharacterInfo.CHAR_TYPE.HERO:
                     // Skill 이 없으므로 해당 데이터 설정하지 않는다.
