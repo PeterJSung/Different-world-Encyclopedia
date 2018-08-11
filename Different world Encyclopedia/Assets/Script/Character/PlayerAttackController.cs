@@ -6,23 +6,20 @@ using DefineDefaultAttack;
 using AlligatorActionModel;
 using MagitionActionModel;
 
-public class PlayerAttackController : MonoBehaviour {
-
-    Sprite[] alligatorSheetingObject = null;
-    Sprite[] alligatorEndObject = null;
-
-    Sprite[] magitionSheetingStart = null;
-    Sprite[] magitionSheetingHit = null;
-    Sprite[] magitionSheetingEnd = null;
-
-
+public class PlayerAttackController : MonoBehaviour
+{
     public GameObject weaponEffect;
+
+    private Sprite[] alligatorSheetingObject = null;
+    private Sprite[] alligatorEndObject = null;
+
+    private Sprite[] magitionSheetingStart = null;
+    private Sprite[] magitionSheetingHit = null;
+    private Sprite[] magitionSheetingEnd = null;
 
     private SpriteRenderer renderEffect;
     private Color effectTransparent = new Color(1, 1, 1, 0);
     private Transform parentsObject = null;
-
-    private GameObject prefbObject;
 
     private GameObject alligatorFireBallPrefab;
     private GameObject magitionHuricaneBurnPrefab;
@@ -46,21 +43,21 @@ public class PlayerAttackController : MonoBehaviour {
         magitionSheetingHit = Resources.LoadAll<Sprite>("Character/Magition/AttackSheetingHit");
         magitionSheetingEnd = Resources.LoadAll<Sprite>("Character/Magition/AttackSheetingEnd");
 
-        prefbObject = Resources.Load("Prefabs/BulletDefaultAttack") as GameObject;
-
         alligatorFireBallPrefab = Resources.Load("Prefabs/Alligator/FireBall") as GameObject;
         magitionHuricaneBurnPrefab = Resources.Load("Prefabs/Magition/HurricaneBurn") as GameObject;
     }
 
     // Use this for initialization
-    void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    void Start()
+    {
+
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+
+    }
 
     public void SetAttackAxisInfo(Vector3 argLocalEulerAngles, Vector3 argLocalPosition)
     {
@@ -130,7 +127,7 @@ public class PlayerAttackController : MonoBehaviour {
     public IEnumerator AlligatoerAttack(DefaultAttackData _defaultData, ExtraAttackData _extraData)
     {
         yield return StartCoroutine(SwingWeapon(_defaultData.m_fAttackSpeed, _defaultData.m_fWeaponAxisStart, _defaultData.m_fWeaponAxisEnd, _defaultData.rightFunctionPointer(), _defaultData.hitList));
-        
+
         if (_defaultData.hitList.Count > 0)
         {
             //0 이상이면 무기에 맞는놈이있다.
@@ -187,7 +184,7 @@ public class PlayerAttackController : MonoBehaviour {
         argModel.stretchYMin = 0.1f;
         argModel.targetArray = new ArrayList();
         argModel.targetArray.Add(GlobalLayerMask.ENEMY_MASK);
-        
+
         HurricaneBurn firballScript = huricaneBurnObject.GetComponent<HurricaneBurn>();
 
         firballScript.SetParameter(argModel);
