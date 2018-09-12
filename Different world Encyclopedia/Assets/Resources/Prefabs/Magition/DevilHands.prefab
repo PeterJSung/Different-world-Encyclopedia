@@ -137,6 +137,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee6d9834f035f5045a168b1010afa5cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  circleObject: {fileID: 1260039561749266}
+  handsObject: {fileID: 1462935632872568}
 --- !u!212 &212526264168785532
 SpriteRenderer:
   m_ObjectHideFlags: 1

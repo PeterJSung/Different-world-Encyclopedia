@@ -17,7 +17,7 @@ namespace DragonActionModel
 
         public float gapFrame; // ms
 
-        public float stretchYMin; // ms
-        public float stretchYMax; // ms
+        public float stretchXMin; // ms
+        public float stretchXMax; // ms
     }
 }

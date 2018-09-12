@@ -5,6 +5,7 @@ using DefinitionChar;
 using DefineSkill;
 
 using DragonActionModel;
+using MagitionActionModel;
 
 public class PlayerSkill : MonoBehaviour
 {
@@ -88,6 +89,13 @@ public class PlayerSkill : MonoBehaviour
     private IEnumerator MagitionSkill()
     {
         GameObject magicHandsObject = MonoBehaviour.Instantiate(magitionDevilHandsPrefab) as GameObject;
+        MagitionSkillModel skillModel = new MagitionSkillModel();
+        skillModel.magicCircleSprite = magitionMagicCircleSrite;
+        skillModel.devilHandsSprite = magitionHandsSprite;
+        skillModel.circleRenderFrame = defaultSkillInfo.m_sSkillBullet.magitionSkill.circleRenderFrame;
+
+        DevilHandsScript handsScript = magicHandsObject.GetComponent<DevilHandsScript>();
+        handsScript.SetParameter(skillModel);
 
         yield return null;
         moveScript.ReleaseInvincibility();
@@ -105,8 +113,8 @@ public class PlayerSkill : MonoBehaviour
         skillModel.sheetingFrame = defaultSkillInfo.m_sSkillBullet.dragonSkill.eachDuration;
         skillModel.sheetingSprite = dragonLaserSprite;
         skillModel.sheetingSpriteStart = dragonSparkSprite;
-        skillModel.stretchYMax = defaultSkillInfo.m_sSkillBullet.dragonSkill.laserYArea;
-        skillModel.stretchYMin = defaultSkillInfo.m_sSkillBullet.dragonSkill.sparkYArea;
+        skillModel.stretchXMax = defaultSkillInfo.m_sSkillBullet.dragonSkill.laserXArea;
+        skillModel.stretchXMin = defaultSkillInfo.m_sSkillBullet.dragonSkill.sparkXArea;
         skillModel.targetArray = new ArrayList();
         skillModel.targetArray.Add(GlobalLayerMask.ENEMY_MASK); ;
 

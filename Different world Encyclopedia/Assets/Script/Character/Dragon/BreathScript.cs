@@ -80,9 +80,11 @@ public class BreathScript : MonoBehaviour
         float gapTime = skillModel.gapFrame / 1000;
         int renderIndex = 0;
 
-        float startYValue = skillModel.stretchYMin;
+        float startXValue = skillModel.stretchXMin;
+
         
-        colliderController.size = new Vector2(colliderController.size.x, startYValue);
+        colliderController.size = new Vector2(startXValue, colliderController.size.y);
+        colliderController.offset = new Vector2(-(skillModel.stretchXMax - colliderController.size.x) / 2, colliderController.offset.y);
         while (renderIndex < maxLength)
         {
             rendererController.sprite = targetSprite[renderIndex];
@@ -103,9 +105,10 @@ public class BreathScript : MonoBehaviour
         float frameTime = skillModel.sheetingFrame / 1000;
         int renderIndex = 0;
 
-        float startYValue = skillModel.stretchYMax;
+        float startXValue = skillModel.stretchXMax;
 
-        colliderController.size = new Vector2(colliderController.size.x, startYValue);
+        colliderController.size = new Vector2(startXValue, colliderController.size.y);
+        colliderController.offset = new Vector2(0.0f , colliderController.offset.y);
         while (renderIndex < maxLength)
         {
             rendererController.sprite = targetSprite[renderIndex];

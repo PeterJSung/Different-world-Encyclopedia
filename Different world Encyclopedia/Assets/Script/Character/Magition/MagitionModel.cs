@@ -31,6 +31,8 @@ namespace MagitionActionModel
         public Sprite[] magicCircleSprite;
         public Sprite[] devilHandsSprite;
 
+        public float circleRenderFrame;
+
         public ArrayList targetArray;
 
         public bool isRight;

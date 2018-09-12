@@ -7,10 +7,14 @@ public class DevilHandsScript : MonoBehaviour
 {
     MagitionSkillModel skillModel;
 
-    SpriteRenderer rendererController = null;
+    SpriteRenderer rendererCircleController = null;
+    SpriteRenderer rendererHandsController = null;
     CapsuleCollider2D colliderController = null;
 
     bool duringAnimation = false;
+
+    public GameObject circleObject;
+    public GameObject handsObject;
     enum DEVIL_HANDS_STATUS
     {
         NONE = 0, //NOT READY,
@@ -22,8 +26,9 @@ public class DevilHandsScript : MonoBehaviour
 
     void Awake()
     {
-        rendererController = gameObject.GetComponent<SpriteRenderer>();
-        colliderController = gameObject.GetComponent<CapsuleCollider2D>();
+        rendererCircleController = circleObject.GetComponent<SpriteRenderer>();
+        rendererHandsController = handsObject.GetComponent<SpriteRenderer>();
+        colliderController = handsObject.GetComponent<CapsuleCollider2D>();
     }
     // Use this for initialization
     void Start()
@@ -34,26 +39,50 @@ public class DevilHandsScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        /*
+        
         switch (currentStat)
         {
             case DEVIL_HANDS_STATUS.STRETCH_STATUS:
                 if (!duringAnimation)
                 {
-                    StartCoroutine(SparkAnimation());
+                    StartCoroutine(StretchAnimation());
                 }
                 break;
-            case BREATH_STATUS.SHEETITING_END:
+            case DEVIL_HANDS_STATUS.DESTROY:
                 if (!duringAnimation)
                 {
-                    StartCoroutine(LaserAnimation());
+                    StartCoroutine(DisappearAnimation());
                 }
                 break;
-            case BREATH_STATUS.DESTROY:
-                endSkill = true;
-                break;
         }
-        */
+    }
+
+    IEnumerator StretchAnimation()
+    {
+        yield return null;
+    }
+
+    IEnumerator DisappearAnimation()
+    {
+        yield return null;
+    }
+
+    IEnumerator CircleAnimation()
+    {
+        int renderIndex = 0;
+        int maxIndex = skillModel.magicCircleSprite.Length;
+        float renderTiming = skillModel.circleRenderFrame / 1000;
+        while (true)
+        {
+            rendererCircleController.sprite = skillModel.magicCircleSprite[renderIndex];
+            
+            yield return new WaitForSeconds(renderTiming);
+            renderIndex++;
+            if(maxIndex == renderIndex)
+            {
+                renderIndex = 0;
+            }
+        }
     }
 
     private bool isVailidTarget(int hittedLayer)
@@ -66,5 +95,12 @@ public class DevilHandsScript : MonoBehaviour
             }
         }
         return false;
+    }
+
+    public void SetParameter(MagitionSkillModel _argModel)
+    {
+        skillModel = _argModel;
+        StartCoroutine(CircleAnimation());
+        currentStat = DEVIL_HANDS_STATUS.STRETCH_STATUS;
     }
 }

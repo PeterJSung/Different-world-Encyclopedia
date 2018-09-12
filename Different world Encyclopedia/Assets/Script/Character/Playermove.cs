@@ -74,7 +74,7 @@ public class Playermove : MonoBehaviour
 
     void CheckSkill()
     {
-        if (skillController.GetNoSkillAction() && Input.GetKeyDown(KeyCode.C))
+        if (skillController.GetNoSkillAction() && this.IsStatus(GlobalCharacterInfo.CHAR_STATUS.GROUND) && Input.GetKeyDown(KeyCode.C))
         {
             nowStatus |= GlobalCharacterInfo.CHAR_STATUS.SKILL;
         }
