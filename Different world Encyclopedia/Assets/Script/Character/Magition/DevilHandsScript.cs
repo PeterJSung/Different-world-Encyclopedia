@@ -33,7 +33,6 @@ public class DevilHandsScript : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-
     }
 
     // Update is called once per frame
@@ -59,7 +58,20 @@ public class DevilHandsScript : MonoBehaviour
 
     IEnumerator StretchAnimation()
     {
-        yield return null;
+        int renderIndex = 0;
+        int maxIndex = skillModel.devilHandsSprite.Length;
+        float renderTiming = skillModel.handsRenderFrame / 1000;
+        while (true)
+        {
+            rendererHandsController.sprite = skillModel.devilHandsSprite[renderIndex];
+
+            yield return new WaitForSeconds(renderTiming);
+            renderIndex++;
+            if (maxIndex == renderIndex)
+            {
+                renderIndex = 0;
+            }
+        }
     }
 
     IEnumerator DisappearAnimation()

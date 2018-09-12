@@ -25,6 +25,7 @@ namespace DefineSkill
         public Vector2 endPostion;
 
         public float circleRenderFrame;
+        public float handsRenderFrame;
 
         public float handsDegree;
 
@@ -88,7 +89,8 @@ namespace DefineSkill
                     ret.m_sSkillBullet.magitionSkill.startPostion = new Vector2(-3.0f,5.0f);
                     ret.m_sSkillBullet.magitionSkill.endPostion = new Vector2(-1.0f, 8.0f);
 
-                    ret.m_sSkillBullet.magitionSkill.circleRenderFrame = 100.0f;
+                    ret.m_sSkillBullet.magitionSkill.circleRenderFrame = 60.0f;
+                    ret.m_sSkillBullet.magitionSkill.handsRenderFrame = 1000.0f;
 
                     ret.m_sSkillBullet.magitionSkill.handsDegree = 125.0f;
 
