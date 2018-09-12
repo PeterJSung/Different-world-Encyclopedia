@@ -7,20 +7,31 @@ namespace DefineSkill
 {
     public struct SkillSummonData
     {
-        
+
     }
 
     public struct DragonSkill
     {
         public float eachDuration;
         public float gapDuration;
-        public float sparkYArea;
-        public float laserYArea;
+        public float sparkXArea;
+        public float laserXArea;
         //public Vector2 offset;
     }
 
     public struct Magition
     {
+        public Vector2 startPostion;
+        public Vector2 endPostion;
+
+        public float circleRenderFrame;
+
+        public float handsDegree;
+
+        public int handsCount;
+        public float offsetRandomDistMax;
+        public float offsetRandomDegMax;
+
         public Vector2 firstArea;
         public Vector2 lastArea;
     }
@@ -43,7 +54,7 @@ namespace DefineSkill
         public SkillSummonData m_sSkillSummon;
         //for BulletSkill
         public SkillBulletData m_sSkillBullet;
-        
+
         public SkillInfo()
         {
             m_sSkillSummon = new SkillSummonData();
@@ -74,21 +85,33 @@ namespace DefineSkill
                     // Summon Data 만 설정한다.
                     break;
                 case GlobalCharacterInfo.CHAR_TYPE.MAGITION:
+                    ret.m_sSkillBullet.magitionSkill.startPostion = new Vector2(-3.0f,5.0f);
+                    ret.m_sSkillBullet.magitionSkill.endPostion = new Vector2(-1.0f, 8.0f);
+
+                    ret.m_sSkillBullet.magitionSkill.circleRenderFrame = 100.0f;
+
+                    ret.m_sSkillBullet.magitionSkill.handsDegree = 125.0f;
+
+                    ret.m_sSkillBullet.magitionSkill.handsCount = 10;
+                    ret.m_sSkillBullet.magitionSkill.offsetRandomDistMax = 1;
+                    ret.m_sSkillBullet.magitionSkill.offsetRandomDegMax = 10.0f;
+
+
                     ret.m_sSkillBullet.magitionSkill.firstArea = new Vector2(0.0f, 1.0f);
                     ret.m_sSkillBullet.magitionSkill.lastArea = new Vector2(15.0f, 1.0f);
                     break;
                 case GlobalCharacterInfo.CHAR_TYPE.DRAGON:
-                    ret.m_sSkillBullet.dragonSkill.sparkYArea = 0.1f;
-                    ret.m_sSkillBullet.dragonSkill.laserYArea = 1.0f;
+                    ret.m_sSkillBullet.dragonSkill.sparkXArea = 1.0f;
+                    ret.m_sSkillBullet.dragonSkill.laserXArea = 10.0f;
                     //ret.m_sSkillBullet.dragonSkill.offset = new Vector2(ret.m_sSkillBullet.dragonSkill.sparkArea.x / 2, 0.0f);
-                    ret.m_sSkillBullet.dragonSkill.eachDuration = 100.0f;
+                    ret.m_sSkillBullet.dragonSkill.eachDuration = 60.0f;
                     ret.m_sSkillBullet.dragonSkill.gapDuration = 200.0f;
                     break;
                 case GlobalCharacterInfo.CHAR_TYPE.HERO:
                     // Skill 이 없으므로 해당 데이터 설정하지 않는다.
                     break;
             }
-            
+
             return ret;
         }
     }
